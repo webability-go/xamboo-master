@@ -5,6 +5,93 @@
 
       <container id="menu" type="treeContainer" haslistener="yes">
 
+        <!-- maintitle -->
+        <template name="maintitle">
+          <element type="textElement" classname="textmenulink" style="font-weight: bold;"><![CDATA[##MAINTITLEMENU##]]></element>
+          <element type="imageElement" classname="buttonmenu" width="16" height="16" src="/skins/master/icons/xtitle-config.png" style="float: right;">
+            <help>
+              <summary><![CDATA[##titleconfig.summary##]]></summary>
+              <title><![CDATA[##titleconfig.title##]]></title>
+              <description><![CDATA[##titleconfig.description##]]></description>
+            </help>
+            <event type="onclick">
+              <code><![CDATA[
+function(e)
+{
+  var node = this._4gl.app.getNode('index|single|app_config');
+  if (!node)
+  {
+    var tree = {tag:'zone',attributes:{id:'app_config',title:'##CONFIG##',closeable:'yes',shortcut:'##CONFIGSHORTCUT##',application:'config|single'}};
+    this._4gl.app.createTree('index|single|application', tree);
+  }
+  this._4gl.app.getNode('index|single|application').activateZone('app_config');
+}
+              ]]></code>
+            </event>
+          </element>
+          <element type="imageElement" classname="buttonmenu" width="16" height="16" src="/skins/master/icons/xtitle-reload.png" style="float: right;">
+            <help>
+              <summary><![CDATA[##titlereload.summary##]]></summary>
+              <title><![CDATA[##titlereload.title##]]></title>
+              <description><![CDATA[##titlereload.description##]]></description>
+            </help>
+            <event type="onclick">
+              <code><![CDATA[
+  function(e)
+  {
+  }
+              ]]></code>
+            </event>
+          </element>
+        </template>
+
+        <!-- title -->
+        <template name="title">
+          <element type="textElement" classname="textmenulink" style="font-weight: bold;"><![CDATA[{title}]]></element>
+        </template>
+
+        <!-- Files -->
+        <template name="files">
+          <element type="imageElement" classname="imagemenu" width="16" height="16" src="/skins/master/icons/xfiles.png"></element>
+          <element type="textElement" classname="textmenulink"><![CDATA[##FILESMENU##]]>
+            <help>
+              <summary><![CDATA[##files.summary##]]></summary>
+              <title><![CDATA[##files.title##]]></title>
+              <description><![CDATA[##files.description##]]></description>
+            </help>
+            <event type="onclick">
+              <code><![CDATA[
+  function(e)
+  {
+  var n = WA.$N('menu');
+  n.switchzone('files');
+  }
+              ]]></code>
+            </event>
+          </element>
+          <element type="imageElement" classname="buttonmenu" width="16" height="16" src="/skins/master/icons/xfiles-new.png">
+            <help>
+              <summary><![CDATA[##filesnew.summary##]]></summary>
+              <title><![CDATA[##filesnew.title##]]></title>
+              <description><![CDATA[##filesnew.description##]]></description>
+            </help>
+            <event type="onclick">
+              <code><![CDATA[
+  function(e)
+  {
+  var node = WA.$N("app_filesnew");
+  if (!node)
+  {
+    var tree = {tag:'zone',attributes:{id:'app_filesnew',title:'##filesVIEW##',closeable:'yes',application:'files|single',params:'view=global'}};
+    this._4gl.app.createTree('index|single|application', tree);
+  }
+  this._4gl.app.getNode('index|single|application').activateZone("app_filesview");
+  }
+              ]]></code>
+            </event>
+          </element>
+        </template>
+
         <!-- Config -->
         <template name="config">
           <element type="imageElement" classname="imagemenu" width="16" height="16" src="/skins/master/icons/xconfig.png"></element>

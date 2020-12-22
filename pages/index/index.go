@@ -57,10 +57,52 @@ func getMenu(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) m
 
 	rows := []interface{}{}
 
+	// stats
+	optr := map[string]interface{}{
+		"id":        "maintitle",
+		"template":  "maintitle",
+		"loadable":  false,
+		"closeable": false,
+		"closed":    false,
+	}
+	rows = append(rows, optr)
+
+	// stats Title
+	optr = map[string]interface{}{
+		"id":        "statstitle",
+		"template":  "title",
+		"loadable":  false,
+		"closeable": false,
+		"closed":    false,
+		"title":     language.Get("statstitle"),
+	}
+	rows = append(rows, optr)
+
+	// config Title
+	optr = map[string]interface{}{
+		"id":        "configtitle",
+		"template":  "title",
+		"loadable":  false,
+		"closeable": false,
+		"closed":    false,
+		"title":     language.Get("configtitle"),
+	}
+	rows = append(rows, optr)
+
+	// Files
+	optr = map[string]interface{}{
+		"id":        "files",
+		"template":  "files",
+		"loadable":  false,
+		"closeable": true,
+		"closed":    true,
+	}
+	rows = append(rows, optr)
+
 	config := s.GetFullConfig()
 
 	// Config:
-	optr := map[string]interface{}{
+	optr = map[string]interface{}{
 		"id":        "config",
 		"template":  "config",
 		"loadable":  false,
@@ -190,16 +232,16 @@ func getMenu(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) m
 			icompiledmodules := lib.GetCompiledModules()
 			compiledmodules := icompiledmodules.(*base.Modules)
 
-			fmt.Println(configfile)
-			fmt.Println(contextcontainer)
-			fmt.Println(compiledmodules)
+			//			fmt.Println(configfile)
+			//			fmt.Println(contextcontainer)
+			//			fmt.Println(compiledmodules)
 
 			// Lets load the configuration structure of the context
 			bridge.Containers.Load(ctx, h.Name+"_"+id, configfile)
 			container := bridge.Containers.GetContainer(h.Name + "_" + id)
 			contexts := container.Contexts
 
-			fmt.Println(contexts)
+			//			fmt.Println(contexts)
 
 			for _, context := range contexts {
 				thiscontext := contextcontainer.GetDatasource(context.ID)

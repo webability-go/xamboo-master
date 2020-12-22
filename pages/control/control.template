@@ -1,6 +1,62 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <application id="control">
 
-  <element type="textElement" classname="textmenulink"><![CDATA[Control center]]></element>
+  <element type="htmlElement" classname="textmenulink"><![CDATA[<h1>Control center</h1>]]></element>
+
+  <element type="htmlElement" classname="textmenulink"><![CDATA[[Reiniciar el sistema]]]></element>
+  <element id="data" type="htmlElement" classname="textmenulink"><![CDATA[{{data}}]]></element>
+
+  <element type="textElement" classname="textmenulink"><![CDATA[
+
+
+
+<pre>
+
+
+<h1>Accesos</h1>
+    username=admin
+    password=e172eba151400d81b0798387ccde3f0f
+    email=philippe.thomassigny@gmail.com
+
+<h1>Datos del sistema</h1>
+    language=es
+    country=mx
+    serial=00000000000000000000
+    installed=yes
+
+<h1>Logs</h1>
+    "sys": "stdout:",
+    "errors": "stdout:"
+
+
+<h1>Config files</h1>
+    "./applications/thomassigny.org/masterthomassigny.json",
+    "./applications/thomassigny.org/thomassigny.json",
+
+    "./applications/antimailer.com/antimailer-config.json",
+
+    "./applications/colibri/config.json",
+
+    "./applications/webability.info/www-config.json",
+    "./applications/webability.info/xmodules-config.json",
+    "./applications/webability.info/developers-config.json",
+    "./applications/webability.info/xamboo-config.json",
+    "./applications/webability.info/dot-us.json",
+
+    "./applications/fantabulastico/www-config.json",
+    "./applications/fantabulastico/star-config.json",
+    "./applications/fantabulastico/invasion-config.json",
+
+    "./applications/numerologia.club/config.json",
+
+    "./applications/arkagame/config.json"
+
+
+
+</pre>
+
+
+
+    ]]></element>
 
 </application>

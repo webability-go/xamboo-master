@@ -47,27 +47,6 @@ function(e)
       <element id="alerts" type="htmlElement" classname="alerttitle" width="300" height="20" right="400" top="26"></element>
       <element id="timer" type="htmlElement" classname="timertitle" width="300" height="20" right="100" top="26"></element>
 
-      <element type="htmlElement" classname="buttonmenuconfig" width="16" height="16" right="50" top="25">
-        <event type="onclick">
-          <code><![CDATA[
-function(e)
-{
-  var node = this._4gl.app.getNode('index|single|app_config');
-  if (!node)
-  {
-    var tree = {tag:'zone',attributes:{id:'app_config',title:'##CONFIG##',closeable:'yes',shortcut:'##CONFIGSHORTCUT##',application:'config|single'}};
-    this._4gl.app.createTree('index|single|application', tree);
-  }
-  this._4gl.app.getNode('index|single|application').activateZone('app_config');
-}
-          ]]></code>
-        </event>
-        <help>
-          <summary>##config.summary##</summary>
-          <title>##config.title##</title>
-          <description>##config.description##</description>
-        </help>
-      </element>
       <element id="help_header" type="htmlElement" classname="buttonmenuhelpfull" width="16" height="16" right="30" top="25">
         <event type="onclick">
           <code><![CDATA[
@@ -133,28 +112,7 @@ function(e)
           <description>##disconnect.description##</description>
         </help>
       </element>
-      <element type="htmlElement" classname="buttonmenuuser" width="16" height="16" right="30" top="5">
-        <event type="onclick">
-          <code><![CDATA[
-function(e)
-{
-  var node = this._4gl.app.getNode('index|single|app_mypage');
-  if (!node)
-  {
-    var tree = {tag:'zone',attributes:{id:'app_mypage',title:'##MYPAGE##',closeable:'yes',shortcut:'##MYPAGESHORTCUT##',application:'mypage|single'}};
-    this._4gl.app.createTree('index|single|application', tree);
-  }
-  this._4gl.app.getNode('index|single|application').activateZone('app_mypage');
-}
-          ]]></code>
-        </event>
-        <help>
-          <summary>##mypage.summary##</summary>
-          <title>##mypage.title##</title>
-          <description>##mypage.description##</description>
-        </help>
-      </element>
-      <element type="htmlElement" classname="" width="200" height="20" right="50" top="5"><![CDATA[<table style="width: 200px;"><tr><td id="main_username" class="usertitle">{{USER}}</td></tr></table>]]></element>
+      <element type="htmlElement" classname="" width="200" height="20" right="30" top="5"><![CDATA[<table style="width: 200px;"><tr><td id="main_username" class="usertitle">{{USER}}</td></tr></table>]]></element>
 
     </zone>
     <zone id="workarea" size="*">

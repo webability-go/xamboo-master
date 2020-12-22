@@ -14,6 +14,8 @@ func Run(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLangua
 		// WAJAF
 		"/js?js=core.js",
 		"/js?js=corebrowser.js",
+		"/js?js=coreext.js",
+		"/js?js=coretemplate.js",
 		"/js?js=eventManager.js",
 		"/js?js=ajaxManager.js",
 		"/js?js=ondemandManager.js",

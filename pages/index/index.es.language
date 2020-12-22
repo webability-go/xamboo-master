@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <language id="index" lang="es">
 
+  <entry id="MAINTITLEMENU"><![CDATA[Main Xamboo Menu]]></entry>
+  <entry id="titleconfig.summary"><![CDATA[Click aquí para abrir o cerrar la lista de elementos de la configuración.]]></entry>
+  <entry id="titleconfig.title"><![CDATA[Configuración general:]]></entry>
+  <entry id="titleconfig.description"><![CDATA[Esta pantalla permite visualizar todos los elementos de la configuración general del sistema.]]></entry>
+  <entry id="titlereload.summary"><![CDATA[Click aquí para recargar el menu y actualizarlo.]]></entry>
+  <entry id="titlereload.title"><![CDATA[Recargar:]]></entry>
+  <entry id="titlereload.description"><![CDATA[Este boton permite recargar todo el menu.]]></entry>
+
+  <entry id="CONFIG"><![CDATA[C<u>o</u>nfiguración]]></entry>
+  <entry id="CONFIGSHORTCUT"><![CDATA[alt+o]]></entry>
+
+
+  <entry id="statstitle"><![CDATA[Estadísticas:]]></entry>
+
+  <entry id="configtitle"><![CDATA[Configuración general:]]></entry>
+
+  <entry id="FILESMENU"><![CDATA[Archivos]]></entry>
+
   <entry id="CONFIGMENU"><![CDATA[Configuración]]></entry>
   <entry id="config.summary"><![CDATA[Click aquí para abrir o cerrar la lista de elementos de la configuración.]]></entry>
   <entry id="config.title"><![CDATA[Configuración:]]></entry>
