@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/xml"
-	"io/ioutil"
 
 	"github.com/webability-go/xcore/v2"
 	"github.com/webability-go/xdommask"
@@ -176,7 +175,7 @@ func Formaccount(ctx *assets.Context, template *xcore.XTemplate, language *xcore
 	if success {
 		// write config file
 		// simulate load of config file into Engine.Host.Config till next system restart
-		generateConfig(ctx, L, C, serial, username, password, email)
+		bridge.GenerateConfig(ctx, L, C, serial, username, password, email)
 		messages["text"] = language.Get("success")
 	} else {
 
@@ -186,25 +185,4 @@ func Formaccount(ctx *assets.Context, template *xcore.XTemplate, language *xcore
 	return map[string]interface{}{
 		"success": success, "messages": messages, "popup": false,
 	}
-}
-
-func generateConfig(ctx *assets.Context, L string, C string, serial string, username string, password string, email string) {
-
-	md5password := bridge.GetMD5Hash(password)
-
-	local := "username=" + username + "\n"
-	local += "password=" + md5password + "\n"
-	local += "email=" + email + "\n"
-	local += "language=" + L + "\n"
-	local += "country=" + C + "\n"
-	local += "serial=" + serial + "\n"
-	local += "installed=yes\n"
-
-	// write local
-	resourcesdir, _ := ctx.Sysparams.GetString("resourcesdir")
-	path := resourcesdir + "/local.conf"
-	ioutil.WriteFile(path, []byte(local), 0644)
-
-	// inject into Host.config
-	ctx.Sysparams.LoadString(local)
 }

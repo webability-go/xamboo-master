@@ -85,6 +85,10 @@ func Link(lib *plugin.Plugin) error {
 	if err != nil {
 		return err
 	}
+	err = LinkConfig(lib)
+	if err != nil {
+		return err
+	}
 	err = LinkContexts(lib)
 	if err != nil {
 		return err

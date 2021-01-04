@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<language id="module" lang="es">
+  <!-- into the xml application -->
+  <entry id="editor.title"><![CDATA[Administración del módulo:]]></entry>
+  <entry id="button.update"><![CDATA[Instalar:]]></entry>
+
+</language>

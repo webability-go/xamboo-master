@@ -104,6 +104,10 @@
 
 .group>fieldset>.control { padding: 17px 20px 18px; padding-left: 160px; margin-top: 5px; margin-bottom: 5px; border-bottom: 1px solid #ddf; }
 
+.group>fieldset>.info { padding: 17px 10px 18px; margin-top: 5px; margin-bottom: 5px; border-bottom: 1px solid #ddf; }
+
+.group>fieldset>.hidden { display: none; }
+
 
 /* grid CONTAINER CLASSES */
 
@@ -457,4 +461,3 @@ margin-left: 0px; }
 
 /* ELEMENTS CLASSES */
 /* TEXT FIELD ELEMENT */
-

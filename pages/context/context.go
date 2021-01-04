@@ -8,11 +8,11 @@ import (
 	"github.com/webability-go/xdominion"
 	"github.com/webability-go/xdommask"
 
-	"github.com/webability-go/xamboo/server"
-	"github.com/webability-go/xamboo/server/assets"
+	"github.com/webability-go/xamboo"
+	"github.com/webability-go/xamboo/assets"
 
-	cassets "github.com/webability-go/xamboo/master/app/assets"
-	"github.com/webability-go/xamboo/master/app/bridge"
+	cassets "master/app/assets"
+	"master/app/bridge"
 )
 
 func Run(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
@@ -22,7 +22,7 @@ func Run(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLangua
 		return ""
 	}
 
-	mask := getMask(ctx, s.(*server.Server)).Compile()
+	mask := getMask(ctx, s.(*xamboo.Server)).Compile()
 	xmlmask, _ := xml.Marshal(mask)
 	params := &xcore.XDataset{
 		"FORM": string(xmlmask),
@@ -31,7 +31,7 @@ func Run(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLangua
 	return template.Execute(params)
 }
 
-func searchContext(s *server.Server, ctx *assets.Context, host string, app string, contextid string) *cassets.Context {
+func searchContext(s *xamboo.Server, ctx *assets.Context, host string, app string, contextid string) *cassets.Context {
 	config := s.GetFullConfig()
 
 	// Carga los APPs Libraries de cada Host config
@@ -50,7 +50,7 @@ func searchContext(s *server.Server, ctx *assets.Context, host string, app strin
 	return nil
 }
 
-func getMask(ctx *assets.Context, s *server.Server) *xdommask.Mask {
+func getMask(ctx *assets.Context, s *xamboo.Server) *xdommask.Mask {
 
 	host := ctx.Request.Form.Get("host")
 	app := ctx.Request.Form.Get("app")
@@ -73,7 +73,7 @@ func getMask(ctx *assets.Context, s *server.Server) *xdommask.Mask {
 		mask.Key = context
 	}
 	mask.AuthModes = xdommask.INSERT | xdommask.UPDATE | xdommask.VIEW
-	mask.Variables["context"] = context
+	mask.Variables["keycontext"] = context
 
 	mask.AlertMessage = "##mask.errormessage##"
 	mask.ServerMessage = "##mask.servermessage##"
@@ -407,7 +407,7 @@ func Formcontext(ctx *assets.Context, template *xcore.XTemplate, language *xcore
 		if success {
 			// write config file
 			// Load context to load all config
-			searchContext(s.(*server.Server), ctx, host, app, key)
+			searchContext(s.(*xamboo.Server), ctx, host, app, key)
 			context := bridge.Containers.UpsertContext(host+"_"+app, key, name, path)
 			bridge.Containers.SaveContainer(ctx, host+"_"+app)
 

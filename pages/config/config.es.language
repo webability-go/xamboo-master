@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<language id="config" lang="es">
+
+  <entry id="mask.errormessage"><![CDATA[Error, los datos no fuerón enviados al servidor. Favor de verificar los campos en rojo y corregirlos.]]></entry>
+  <entry id="mask.servermessage"><![CDATA[Error, el servidor respondió:]]></entry>
+  <entry id="mask.updatetitle"><![CDATA[Modificar la configuración:]]></entry>
+  <entry id="mask.viewtitle"><![CDATA[Configuración principal:]]></entry>
+
+  <entry id="block1.title"><![CDATA[Accesos:]]></entry>
+
+  <entry id="username.title"><![CDATA[Nombre del administrador:]]></entry>
+  <entry id="username.help.description"><![CDATA[El nombre del adminitrador es una cadena de carácteres de mínimo 4 carácteres, y máximo 80 carácteres. Todas los carácteres son permitidos.]]></entry>
+  <entry id="username.status.notnull"><![CDATA[No puede ser vacio.]]></entry>
+  <entry id="username.status.tooshort"><![CDATA[Debe contener mínimo 4 carácteres.]]></entry>
+
+  <entry id="email.title"><![CDATA[Correo del administrador (login):]]></entry>
+  <entry id="email.help.description"><![CDATA[El correo del adminitrador tiene que ser un correo válido, de máximo 200 carácteres.]]></entry>
+  <entry id="email.status.notnull"><![CDATA[No puede ser vacio.]]></entry>
+
+  <entry id="password.title"><![CDATA[Contraseña de la cuenta:]]></entry>
+  <entry id="password.help.description"><![CDATA[Capturar la nueva contraseña unicamente para modificarla. Si no desea cambiarla, dejar el campo en blanco. La contraseña es una cadena de carácteres de mínimo 4 carácteres, y máximo 80 carácteres. Todas los carácteres son permitidos.]]></entry>
+  <entry id="password.status.notnull"><![CDATA[No puede ser vacia.]]></entry>
+  <entry id="password.status.tooshort"><![CDATA[Debe contener mínimo 4 carácteres.]]></entry>
+
+  <entry id="block2.title"><![CDATA[Datos del sistema:]]></entry>
+
+  <entry id="language.title"><![CDATA[Idioma:]]></entry>
+  <entry id="language.help.description"><![CDATA[El idioma es el código ISO de 2 letras en minusculas. Ejemplo en = inglés, fr = francés, etc.]]></entry>
+  <entry id="language.status.notnull"><![CDATA[No puede ser vacio.]]></entry>
+  <entry id="language.status.tooshort"><![CDATA[Debe contener 2 carácteres.]]></entry>
+
+  <entry id="country.title"><![CDATA[Pais:]]></entry>
+  <entry id="country.help.description"><![CDATA[El pais es el código ISO de 2 letras en mayusculas. Ejemplo US = Estados Unidos, FR = Francia, etc.]]></entry>
+  <entry id="country.status.notnull"><![CDATA[No puede ser vacio.]]></entry>
+  <entry id="country.status.tooshort"><![CDATA[Debe contener 2 carácteres.]]></entry>
+
+  <entry id="serial.title"><![CDATA[Número de serie:]]></entry>
+  <entry id="serial.help.description"><![CDATA[El número de serie se puede obtener en el sitio www.webability.info. Si no tiene número puede capturar 16 ceros.]]></entry>
+  <entry id="serial.status.notnull"><![CDATA[No puede ser vacio.]]></entry>
+  <entry id="serial.status.tooshort"><![CDATA[Debe contener 16 carácteres.]]></entry>
+
+  <entry id="form.update"><![CDATA[Modificar los datos]]></entry>
+  <entry id="form.continue"><![CDATA[Guardar los cambios]]></entry>
+  <entry id="form.reset"><![CDATA[Deshacer los cambios]]></entry>
+
+</language>

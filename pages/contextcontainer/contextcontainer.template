@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<application id="contexteditor">
+<application id="contextcontainer">
 
   <container type="separatorContainer" width="max" height="max" mode="vertical" auto="yes" classname="separatorinvisiblevertical">
     <zone size="60">

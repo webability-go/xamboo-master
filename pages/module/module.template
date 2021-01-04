@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<application id="moduleeditor">
+<application id="module">
 
   <container type="separatorContainer" width="max" height="max" mode="vertical" auto="yes" classname="separatorinvisiblevertical">
     <zone size="60">
       <container type="simpleContainer" width="max" height="max">
         <zone>
           <element id="titleform" type="htmlElement" classname="introcenter">
-<![CDATA[##editortitle##]]>
+<![CDATA[##editor.title## {{module}}]]>
           </element>
         </zone>
       </container>
     </zone>
     <zone size="*">
-      <element type="htmlElement" classname="introcenter">
-<![CDATA[{{DATA}}]]>
-      </element>
-      <element type="buttonElement">Instalar/Actualizar
+      <element type="htmlElement"><![CDATA[
+<center>
+{{DATA}}
+</center>
+      ]]></element>
+      <element type="buttonElement">##button.update##
         <event type="onclick">
           <code><![CDATA[
 function(e)

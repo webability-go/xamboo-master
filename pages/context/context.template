@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<application id="context">
+
+  <container type="separatorContainer" width="max" height="max" mode="vertical" auto="yes" classname="separatorinvisiblevertical">
+    <zone size="60">
+      <element id="titleform" type="htmlElement" classname="introcenter">
+<![CDATA[##editortitle##]]>
+      </element>
+    </zone>
+    <zone size="200">
+      <element type="htmlElement"><![CDATA[
+
+<br />
+<br />
+<br />
+
+            CONTENEDORES QUE TIENEN ESTE CONTEXTO:
+<br />
+<br />
+<br />
+            MODULOS AUTORIZADOS EN ESTE CONTEXTO:
+
+
+
+
+      ]]></element>
+    </zone>
+
+    <zone size="*">
+{{FORM}}
+    </zone>
+  </container>
+</application>

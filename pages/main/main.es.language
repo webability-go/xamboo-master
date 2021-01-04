@@ -13,19 +13,6 @@
     <entry id="version">v</entry>
     <entry id="footer"><![CDATA[Xamboo&reg; v1 &copy; 2000-2020 - Master Engine]]></entry>
 
-    <entry id="config.summary"><![CDATA[Click para ir a los parámetros de configuración del sitio Maestro.]]></entry>
-    <entry id="config.title"><![CDATA[Parámetros de configuración:]]></entry>
-    <entry id="config.description"><![CDATA[Este ícono permite acceder a los parámetros de configuración del sitio Maestro, incluyendo skins, pais, idiomas, el manejo de errores, entre otros.
-    ]]></entry>
-    <entry id="CONFIG"><![CDATA[C<u>o</u>nfiguración]]></entry>
-    <entry id="CONFIGSHORTCUT"><![CDATA[alt+o]]></entry>
-
-    <entry id="mypage.summary"><![CDATA[Click para ir a 'Mi página'.]]></entry>
-    <entry id="mypage.title"><![CDATA[Mi página:]]></entry>
-    <entry id="mypage.description"><![CDATA[Este ícono permite acceder a 'Mi página' en donde podrá modificar su nombre de usuario, contraseña, y ver su bitácora de actividades.]]></entry>
-    <entry id="MYPAGE"><![CDATA[Mi <u>p</u>ágina]]></entry>
-    <entry id="MYPAGESHORTCUT"><![CDATA[alt+p]]></entry>
-
     <entry id="CONSOLE"><![CDATA[Co<u>n</u>sola]]></entry>
     <entry id="CONSOLESHORTCUT"><![CDATA[alt+n]]></entry>
 
