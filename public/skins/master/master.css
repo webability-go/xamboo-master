@@ -791,3 +791,12 @@ treeexplorer
 {
   background-color: #880000;
 }
+
+.module-table {
+  border: 1px solid blue;
+}
+
+.module-table td {
+  padding: 10px;
+  border: 1px solid green;
+}

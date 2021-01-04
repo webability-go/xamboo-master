@@ -5,7 +5,7 @@ import (
 
 	"github.com/webability-go/xmodules/base"
 
-	_ "github.com/webability-go/xmodules/client"
+	//	_ "github.com/webability-go/xmodules/client"
 	_ "github.com/webability-go/xmodules/clientlink"
 	_ "github.com/webability-go/xmodules/clientp18n"
 	_ "github.com/webability-go/xmodules/clientsecurity"

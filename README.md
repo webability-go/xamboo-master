@@ -42,6 +42,12 @@ TO DO
 Version Changes Control
 =======================
 
+V0.0.2 - 2020-01-04
+-----------------------
+- Menu ordered by different types of objects.
+- Main config editor done
+- module page nearly done
+
 V0.0.1 - 2020-12-22
 -----------------------
 - Main first realease

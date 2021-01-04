@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<language id="moduleeditor" lang="es">
+<language id="context" lang="es">
   <!-- into the xml application -->
-  <entry id="editortitle"><![CDATA[Administración del módulo:]]></entry>
+  <entry id="editortitle"><![CDATA[Administración del contexto:]]></entry>
 
   <!-- into the lib php application -->
   <entry id="mask.errormessage"><![CDATA[Los datos aún no son bien capturados. Por favor, verifique los mensajes y los campos en rojo antes de enviar la información.]]></entry>
