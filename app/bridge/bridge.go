@@ -24,10 +24,15 @@ const (
 func Setup(ctx *assets.Context, connection int) bool {
 
 	// Ask for the plugins we need
-	app, ok := ctx.Plugins["app"]
+	appname, _ := ctx.Sysparams.GetString("masterapp")
+	if appname == "" {
+		http.Error(ctx.Writer, "Master Library name is not available in config file (parameter masterapp missing)", http.StatusInternalServerError)
+		return false
+	}
+	app, ok := ctx.Plugins[appname]
 	if !ok {
 		// 500 internal error
-		http.Error(ctx.Writer, "Library xmodules/app is not available", http.StatusInternalServerError)
+		http.Error(ctx.Writer, "Library master/app is not available", http.StatusInternalServerError)
 		return false
 	}
 
@@ -35,7 +40,7 @@ func Setup(ctx *assets.Context, connection int) bool {
 	err := Start(ctx, app)
 	if err != nil {
 		// 500 internal error
-		http.Error(ctx.Writer, "Library xmodules/app could not link with system", http.StatusInternalServerError)
+		http.Error(ctx.Writer, "Library master/app could not link with system", http.StatusInternalServerError)
 		return false
 	}
 

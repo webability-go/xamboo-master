@@ -32,13 +32,23 @@ func Run(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLangua
 	return template.Execute(params)
 }
 
+type cc struct {
+	Ptr              string
+	ID               string
+	Ctxid            string
+	Modversion       string
+	Installedversion string
+	Prefix           string
+}
+
 func generateData(ctx *assets.Context, s *xamboo.Server, module string) string {
 
 	config := s.GetFullConfig()
 	data := "<table class=\"module-table\">"
-	data += "<tr><td>Host/Applicación</td><td>Contexto</td><td>Versión compilada</td><td>Versión instalada</td><td>Prefijo</td><td>Comandos</td>"
+	data += "<tr><td>Applicación</td><td>Contexto</td><td>Versión compilada</td><td>Versión instalada</td><td>Prefijo</td><td>Comandos</td>"
 
 	// 1. Get all the contexts with and without the module authorized
+	contextcontainerslist := map[string]cc{}
 
 	// Carga los APPs Libraries de cada Host config
 	for _, h := range config.Hosts {
@@ -46,6 +56,7 @@ func generateData(ctx *assets.Context, s *xamboo.Server, module string) string {
 		for id, lib := range h.Applications {
 
 			configfile := lib.GetDatasourcesConfigFile()
+
 			contextcontainer := lib.GetDatasourceSet()
 			icompiledmodules := lib.GetCompiledModules()
 			compiledmodules := icompiledmodules.(*base.Modules)
@@ -55,7 +66,6 @@ func generateData(ctx *assets.Context, s *xamboo.Server, module string) string {
 			contexts := container.Contexts
 
 			for _, context := range contexts {
-
 				if context.Config == nil {
 					continue // nothing to scan: only config link exists
 				}
@@ -85,14 +95,14 @@ func generateData(ctx *assets.Context, s *xamboo.Server, module string) string {
 					}
 					ptr := fmt.Sprintf("%p", lib)
 
-					data += "<tr>"
-					data += "<td>" + h.Name + " / "
-					data += id + " [" + ptr + "]</td>"
-					data += "<td>" + context.ID + "</td>"
-					data += "<td>" + modversion + "</td>"
-					data += "<td>" + installedversion + "</td>"
-					data += "<td>" + modprefix + "</td>"
-					data += "<td>[INSTALAR] [DESINSTALAR]</td>"
+					contextcontainerslist[ptr+context.ID] = cc{
+						Ptr:              ptr,
+						ID:               id,
+						Ctxid:            context.ID,
+						Modversion:       modversion,
+						Installedversion: installedversion,
+						Prefix:           modprefix,
+					}
 
 					// Verify if the module is compiled/installed for this DB
 					/*
@@ -157,6 +167,29 @@ func generateData(ctx *assets.Context, s *xamboo.Server, module string) string {
 			}
 		}
 	}
+
+	for _, cc := range contextcontainerslist {
+		data += "<tr>"
+		data += "<td>" + cc.ID + " [" + cc.Ptr + "]</td>"
+		data += "<td>" + cc.Ctxid + "</td>"
+		data += "<td>" + cc.Modversion + "</td>"
+		data += "<td>" + cc.Installedversion + "</td>"
+		data += "<td>" + cc.Prefix + "</td>"
+
+		data += "<td>"
+		if cc.Installedversion == "" {
+			data += "[<span style=\"background-color: #dfd; cursor: pointer;\" onclick=\"install('" + cc.Ptr + "', '" + cc.Ctxid + "', '" + module + "', '" + cc.Prefix + "');\">INSTALAR</span>]"
+		} else if cc.Installedversion != cc.Modversion {
+			data += "[<span style=\"background-color: #ddf; cursor: pointer;\" onclick=\"upgrade('" + cc.Ptr + "', '" + cc.Ctxid + "', '" + module + "', '" + cc.Prefix + "');\">ACTUALIZAR</span>]"
+		}
+		if cc.Installedversion != "" {
+			data += "[<span style=\"background-color: #ddf; cursor: pointer;\" onclick=\"reinstall('" + cc.Ptr + "', '" + cc.Ctxid + "', '" + module + "', '" + cc.Prefix + "');\">REINSTALAR</span>]"
+			data += "[<span style=\"background-color: #fdd; cursor: pointer;\" onclick=\"uninstall('" + cc.Ptr + "', '" + cc.Ctxid + "', '" + module + "', '" + cc.Prefix + "');\">DESINSTALAR</span>]"
+		}
+		data += "</td>"
+
+	}
+
 	data += "</table>"
 
 	return data
@@ -170,7 +203,6 @@ func Install(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLa
 	}
 	srv := s.(*xamboo.Server)
 
-	host := ctx.Request.Form.Get("host")
 	app := ctx.Request.Form.Get("app")
 	scontext := ctx.Request.Form.Get("context")
 	module := ctx.Request.Form.Get("module")
@@ -178,14 +210,15 @@ func Install(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLa
 
 	// Get config to access things
 	config := srv.GetFullConfig()
+	result := []string{}
+	var err error
 
 	// Extract the module interface from the APP Plugin
+	done := false
 	for _, h := range config.Hosts {
-		if h.Name != host {
-			continue
-		}
-		for id, lib := range h.Applications {
-			if id != app {
+		for _, lib := range h.Applications {
+			ptr := fmt.Sprintf("%p", lib)
+			if ptr != app {
 				continue
 			}
 
@@ -197,24 +230,29 @@ func Install(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLa
 				continue
 			}
 
-			contextcontainer := lib.GetDatasourceSet()
+			datasourceset := lib.GetDatasourceSet()
 
-			contextdata := contextcontainer.GetDatasource(scontext)
+			datasource := datasourceset.GetDatasource(scontext)
 
-			if contextdata == nil {
+			if datasource == nil {
 				continue
 			}
 
-			fmt.Println("MODULE AND CONTEXT FOUND:", moduledata, contextdata, prefix)
+			//			fmt.Println("MODULE AND CONTEXT FOUND:", moduledata, contextdata, prefix)
 			// do install/update
 
-			result, err := moduledata.Synchronize(contextdata, prefix)
+			result, err = moduledata.Synchronize(datasource, prefix)
+			done = true
 
 			fmt.Println(err, result)
+			break
+		}
+		if done {
+			break
 		}
 	}
 
 	return map[string]interface{}{
-		"success": true, "messages": "Installed", "popup": false,
+		"success": true, "messages": "Installed", "popup": false, "result": result,
 	}
 }

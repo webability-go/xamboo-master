@@ -16,18 +16,36 @@
 <center>
 {{DATA}}
 </center>
-      ]]></element>
-      <element type="buttonElement">##button.update##
-        <event type="onclick">
-          <code><![CDATA[
-function(e)
-{
-  WA.Managers.ajax.createRequest("/moduleeditor/install/json", "POST", "host={{host}}&app={{app}}&context={{context}}&module={{module}}&prefix={{prefix}}", function(response) { console.log(response.responseText); }, true)
-}
-          ]]></code>
-        </event>
 
-      </element>
+<div id=""
+
+      ]]></element>
+      <element id="result" type="htmlElement"></element>
     </zone>
   </container>
+
+  <element type="codeElement"><![CDATA[
+
+function install( app, context, module, prefix)
+{
+  WA.Managers.ajax.createRequest("/module/install/json", "POST", "app="+app+"&context="+context+"&module="+module+"&prefix="+prefix, function(response) { WA.toDOM('module|'+module+'|result').innerHTML = response.responseText; }, true)
+}
+
+function upgrade( app, context, module, prefix)
+{
+  WA.Managers.ajax.createRequest("/module/install/json", "POST", "app="+app+"&context="+context+"&module="+module+"&prefix="+prefix, function(response) { WA.toDOM('module|'+module+'|result').innerHTML = response.responseText; }, true)
+}
+
+function reinstall( app, context, module, prefix)
+{
+  WA.Managers.ajax.createRequest("/module/install/json", "POST", "app="+app+"&context="+context+"&module="+module+"&prefix="+prefix, function(response) { WA.toDOM('module|'+module+'|result').innerHTML = response.responseText; }, true)
+}
+
+function uninstall( app, context, module, prefix)
+{
+  WA.Managers.ajax.createRequest("/module/uninstall/json", "POST", "app="+app+"&context="+context+"&module="+module+"&prefix="+prefix, function(response) { WA.toDOM('module|'+module+'|result').innerHTML = response.responseText; }, true)
+}
+
+]]></element>
+
 </application>

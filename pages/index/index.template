@@ -31,6 +31,33 @@ function(e)
           <element type="textElement" classname="textmenulink" style="font-weight: bold;"><![CDATA[{title}]]></element>
         </template>
 
+        <!-- Live stats -->
+        <template name="livestats">
+          <element type="imageElement" classname="imagemenu" width="16" height="16" src="/skins/master/icons/livestats.png"></element>
+          <element type="textElement" classname="textmenulink"><![CDATA[##LIVESTATS.TITLE##]]>
+            <help>
+              <summary><![CDATA[##livestats.help.summary##]]></summary>
+              <title><![CDATA[##livestats.help.title##]]></title>
+              <description><![CDATA[##livestats.help.description##]]></description>
+            </help>
+            <event type="onclick">
+              <code><![CDATA[
+function(e)
+{
+  var node = WA.$N("app_livestats");
+  if (!node)
+  {
+    var tree = {tag:'zone',attributes:{id:'app_livestats',title:'##LIVESTATS##',closeable:'yes',shortcut:'##LIVESTATSSHORTCUT##',application:'livestats|single'}};
+    this._4gl.app.createTree('index|single|application', tree);
+  }
+  this._4gl.app.getNode('index|single|application').activateZone('app_livestats');
+}
+              ]]></code>
+            </event>
+          </element>
+        </template>
+
+
         <!-- Config -->
         <template name="mainconfig">
           <element type="imageElement" classname="imagemenu" width="16" height="16" src="/skins/master/icons/mainconfig.png"></element>
