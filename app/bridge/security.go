@@ -6,10 +6,10 @@ import (
 	"plugin"
 
 	//  "github.com/webability-go/xdominion"
-	"github.com/webability-go/xamboo/assets"
+	"github.com/webability-go/xamboo/cms/context"
 )
 
-var VerifyLogin func(*assets.Context)
+var VerifyLogin func(*context.Context)
 var GetMD5Hash func(string) string
 var CreateKey func(int, int) string
 
@@ -20,7 +20,7 @@ func LinkSecurity(lib *plugin.Plugin) error {
 		fmt.Println(err)
 		return errors.New("ERROR: THE APPLICATION LIBRARY DOES NOT CONTAIN VerifyLogin FUNCTION")
 	}
-	VerifyLogin = fct.(func(*assets.Context))
+	VerifyLogin = fct.(func(*context.Context))
 
 	fct, err = lib.Lookup("GetMD5Hash")
 	if err != nil {

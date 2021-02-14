@@ -7,12 +7,12 @@ import (
 	"github.com/webability-go/xconfig"
 	"github.com/webability-go/xcore/v2"
 
-	"github.com/webability-go/xamboo/assets"
+	"github.com/webability-go/xamboo/cms/context"
 
 	"master/app/bridge"
 )
 
-func Run(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
+func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
 	ok := bridge.Setup(ctx, bridge.NOTINSTALLED)
 	if !ok {
@@ -94,7 +94,7 @@ func getCountries(cfg *xconfig.XConfig) string {
 	return string(text)
 }
 
-func getConfig(ctx *assets.Context) *xconfig.XConfig {
+func getConfig(ctx *context.Context) *xconfig.XConfig {
 	resourcesdir, _ := ctx.Sysparams.GetString("resourcesdir")
 	lang := xconfig.New()
 	lang.LoadFile(resourcesdir + "/languages/languages.conf")

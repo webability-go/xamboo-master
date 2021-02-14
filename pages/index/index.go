@@ -6,15 +6,16 @@ import (
 
 	"github.com/webability-go/xcore/v2"
 
-	"github.com/webability-go/xamboo"
-	"github.com/webability-go/xamboo/assets"
+	"github.com/webability-go/xamboo/applications"
+	"github.com/webability-go/xamboo/cms"
+	"github.com/webability-go/xamboo/cms/context"
 
 	"github.com/webability-go/xmodules/base"
 
 	"master/app/bridge"
 )
 
-func Run(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
+func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
 	ok := bridge.Setup(ctx, bridge.USER)
 	if !ok {
@@ -29,7 +30,7 @@ func Run(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLangua
 	return template.Execute(params)
 }
 
-func Menu(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
+func Menu(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
 	ok := bridge.Setup(ctx, bridge.USER)
 	if !ok {
@@ -39,33 +40,33 @@ func Menu(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLangu
 	Order := ctx.Request.Form.Get("Order")
 
 	if Order == "get" {
-		return getMenu(ctx, s.(*xamboo.Server), language)
+		return getMenu(ctx, s.(*cms.CMS), language)
 	}
 	if Order == "getchildren" {
 		Father := ctx.Request.Form.Get("father")
 		switch Father {
 		case "files":
-			return getFiles(ctx, s.(*xamboo.Server), language)
+			return getFiles(ctx, s.(*cms.CMS), language)
 		case "services":
-			return getServices(ctx, s.(*xamboo.Server), language)
+			return getServices(ctx, s.(*cms.CMS), language)
 		case "listeners":
-			return getListeners(ctx, s.(*xamboo.Server), language)
+			return getListeners(ctx, s.(*cms.CMS), language)
 		case "hosts":
-			return getHosts(ctx, s.(*xamboo.Server), language)
+			return getHosts(ctx, s.(*cms.CMS), language)
 		case "engines":
-			return getEngines(ctx, s.(*xamboo.Server), language)
+			return getEngines(ctx, s.(*cms.CMS), language)
 		case "contexts":
-			return getContexts(ctx, s.(*xamboo.Server), language)
+			return getContexts(ctx, s.(*cms.CMS), language)
 		case "contextcontainers":
-			return getContextContainers(ctx, s.(*xamboo.Server), language)
+			return getContextContainers(ctx, s.(*cms.CMS), language)
 		case "modules":
-			return getModules(ctx, s.(*xamboo.Server), language)
+			return getModules(ctx, s.(*cms.CMS), language)
 		default:
 			if Father[0:4] == "ctx-" { // modules of context
-				return getModulesOfContainer(ctx, s.(*xamboo.Server), language, Father[4:])
+				return getModulesOfContainer(ctx, s.(*cms.CMS), language, Father[4:])
 			}
 		}
-		return getMenu(ctx, s.(*xamboo.Server), language)
+		return getMenu(ctx, s.(*cms.CMS), language)
 	}
 	if Order == "openclose" {
 
@@ -79,7 +80,7 @@ func Menu(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLangu
 	}
 }
 
-func getMenu(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) map[string]interface{} {
+func getMenu(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
 
 	rows := []interface{}{}
 
@@ -388,7 +389,7 @@ func getMenu(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) m
 
 }
 
-func getFiles(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) map[string]interface{} {
+func getFiles(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
 
 	rows := []interface{}{}
 
@@ -414,7 +415,7 @@ func getFiles(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) 
 
 }
 
-func getServices(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) map[string]interface{} {
+func getServices(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
 
 	rows := []interface{}{}
 
@@ -460,7 +461,7 @@ func getServices(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguag
 
 }
 
-func getListeners(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) map[string]interface{} {
+func getListeners(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
 
 	rows := []interface{}{}
 
@@ -489,7 +490,7 @@ func getListeners(ctx *assets.Context, s *xamboo.Server, language *xcore.XLangua
 
 }
 
-func getHosts(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) map[string]interface{} {
+func getHosts(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
 
 	rows := []interface{}{}
 
@@ -518,7 +519,7 @@ func getHosts(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) 
 
 }
 
-func getEngines(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) map[string]interface{} {
+func getEngines(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
 
 	rows := []interface{}{}
 
@@ -548,7 +549,7 @@ type ct struct {
 	ID  string
 }
 
-func getContexts(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) map[string]interface{} {
+func getContexts(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
 
 	rows := []interface{}{}
 
@@ -558,11 +559,12 @@ func getContexts(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguag
 	// TODO(phil) Add stats fo # used in applications
 
 	for _, h := range config.Hosts {
-		for id, lib := range h.Applications {
+		for _, plg := range h.Plugins {
 
+			lib := applications.GetApplication(plg.Id)
 			configfile := lib.GetDatasourcesConfigFile()
-			bridge.Containers.Load(ctx, h.Name+"_"+id, configfile)
-			container := bridge.Containers.GetContainer(h.Name + "_" + id)
+			bridge.Containers.Load(ctx, h.Name+"_"+plg.Name, configfile)
+			container := bridge.Containers.GetContainer(h.Name + "_" + plg.Name)
 			contexts := container.Contexts
 			ptr := fmt.Sprintf("%p", lib)
 
@@ -602,7 +604,7 @@ type cc struct {
 	ConfigFile string
 }
 
-func getContextContainers(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) map[string]interface{} {
+func getContextContainers(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
 
 	rows := []interface{}{}
 
@@ -612,14 +614,15 @@ func getContextContainers(ctx *assets.Context, s *xamboo.Server, language *xcore
 	// TODO(phil) Add stats fo # used in applications
 
 	for _, h := range config.Hosts {
-		for id, lib := range h.Applications {
+		for _, plg := range h.Plugins {
 
+			lib := applications.GetApplication(plg.Id)
 			ptr := fmt.Sprintf("%p", lib)
 			configfile := lib.GetDatasourcesConfigFile()
 
 			contextcontainerslist[ptr] = cc{
 				Ptr:        ptr,
-				ID:         id,
+				ID:         plg.Name,
 				ConfigFile: configfile,
 			}
 		}
@@ -643,20 +646,20 @@ func getContextContainers(ctx *assets.Context, s *xamboo.Server, language *xcore
 
 }
 
-func getModules(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) map[string]interface{} {
+func getModules(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
 
 	rows := []interface{}{}
 
 	config := s.GetFullConfig()
 
-	modules := map[string]assets.Module{}
+	modules := map[string]applications.Module{}
 
 	// Carga los APPs Libraries de cada Host config
 	for _, h := range config.Hosts {
-		for _, application := range h.Applications {
+		for _, plg := range h.Plugins {
 
 			// TODO(phil) add and calculate how many modules are authorized and installed
-
+			application := applications.GetApplication(plg.Id)
 			icompiledmodules := application.GetCompiledModules()
 			compiledmodules := icompiledmodules.(*base.Modules)
 
@@ -698,7 +701,7 @@ type md struct {
 	Prefix           string
 }
 
-func getModulesOfContainer(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage, container string) map[string]interface{} {
+func getModulesOfContainer(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage, container string) map[string]interface{} {
 
 	rows := []interface{}{}
 
@@ -710,8 +713,9 @@ func getModulesOfContainer(ctx *assets.Context, s *xamboo.Server, language *xcor
 	// Carga los APPs Libraries de cada Host config
 	for _, h := range config.Hosts {
 
-		for id, lib := range h.Applications {
+		for _, plg := range h.Plugins {
 
+			lib := applications.GetApplication(plg.Id)
 			ptr := fmt.Sprintf("%p", lib)
 			if ptr != cnt[0] {
 				continue
@@ -722,8 +726,8 @@ func getModulesOfContainer(ctx *assets.Context, s *xamboo.Server, language *xcor
 			icompiledmodules := lib.GetCompiledModules()
 			compiledmodules := icompiledmodules.(*base.Modules)
 
-			bridge.Containers.Load(ctx, h.Name+"_"+id, configfile)
-			container := bridge.Containers.GetContainer(h.Name + "_" + id)
+			bridge.Containers.Load(ctx, h.Name+"_"+plg.Name, configfile)
+			container := bridge.Containers.GetContainer(h.Name + "_" + plg.Name)
 			contexts := container.Contexts
 
 			for _, context := range contexts {

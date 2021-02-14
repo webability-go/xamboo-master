@@ -53,6 +53,10 @@ TO DO
 Version Changes Control
 =======================
 
+V0.0.3 - 2021-02-12
+-----------------------
+- Adaptation to Xamboo v1.5.0 not compatible with previous versions
+
 V0.0.2 - 2020-01-04
 -----------------------
 - Menu ordered by different types of objects.

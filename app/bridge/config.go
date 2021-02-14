@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"plugin"
 
-	"github.com/webability-go/xamboo/assets"
+	"github.com/webability-go/xamboo/cms/context"
 )
 
 var GetMainConfig func() map[string]interface{}
@@ -23,7 +23,7 @@ func LinkConfig(lib *plugin.Plugin) error {
 	return nil
 }
 
-func GenerateConfig(ctx *assets.Context, L string, C string, serial string, username string, password string, email string) {
+func GenerateConfig(ctx *context.Context, L string, C string, serial string, username string, password string, email string) {
 
 	md5password := ""
 	if password != "" {

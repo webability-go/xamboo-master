@@ -6,14 +6,15 @@ import (
 
 	"github.com/webability-go/xcore/v2"
 
-	"github.com/webability-go/xamboo"
-	"github.com/webability-go/xamboo/assets"
+	"github.com/webability-go/xamboo/applications"
+	"github.com/webability-go/xamboo/cms"
+	"github.com/webability-go/xamboo/cms/context"
 	"github.com/webability-go/xmodules/base"
 
 	"master/app/bridge"
 )
 
-func Run(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
+func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
 	ok := bridge.Setup(ctx, bridge.USER)
 	if !ok {
@@ -22,7 +23,7 @@ func Run(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLangua
 
 	module := ctx.Request.Form.Get("module")
 
-	data := generateData(ctx, s.(*xamboo.Server), module)
+	data := generateData(ctx, s.(*cms.CMS), module)
 
 	params := &xcore.XDataset{
 		"module": module,
@@ -41,7 +42,7 @@ type cc struct {
 	Prefix           string
 }
 
-func generateData(ctx *assets.Context, s *xamboo.Server, module string) string {
+func generateData(ctx *context.Context, s *cms.CMS, module string) string {
 
 	config := s.GetFullConfig()
 	data := "<table class=\"module-table\">"
@@ -53,7 +54,8 @@ func generateData(ctx *assets.Context, s *xamboo.Server, module string) string {
 	// Carga los APPs Libraries de cada Host config
 	for _, h := range config.Hosts {
 
-		for id, lib := range h.Applications {
+		for _, plg := range h.Plugins {
+			lib := applications.GetApplication(plg.Id)
 
 			configfile := lib.GetDatasourcesConfigFile()
 
@@ -61,8 +63,8 @@ func generateData(ctx *assets.Context, s *xamboo.Server, module string) string {
 			icompiledmodules := lib.GetCompiledModules()
 			compiledmodules := icompiledmodules.(*base.Modules)
 
-			bridge.Containers.Load(ctx, h.Name+"_"+id, configfile)
-			container := bridge.Containers.GetContainer(h.Name + "_" + id)
+			bridge.Containers.Load(ctx, h.Name+"_"+plg.Name, configfile)
+			container := bridge.Containers.GetContainer(h.Name + "_" + plg.Name)
 			contexts := container.Contexts
 
 			for _, context := range contexts {
@@ -74,7 +76,7 @@ func generateData(ctx *assets.Context, s *xamboo.Server, module string) string {
 					continue // nothing to show
 				}
 
-				var moduledata assets.Module = nil
+				var moduledata applications.Module = nil
 				moduledata = compiledmodules.Get(module)
 				if moduledata == nil {
 					continue
@@ -97,7 +99,7 @@ func generateData(ctx *assets.Context, s *xamboo.Server, module string) string {
 
 					contextcontainerslist[ptr+context.ID] = cc{
 						Ptr:              ptr,
-						ID:               id,
+						ID:               plg.Name,
 						Ctxid:            context.ID,
 						Modversion:       modversion,
 						Installedversion: installedversion,
@@ -195,13 +197,13 @@ func generateData(ctx *assets.Context, s *xamboo.Server, module string) string {
 	return data
 }
 
-func Install(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
+func Install(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
 	ok := bridge.Setup(ctx, bridge.USER)
 	if !ok {
 		return ""
 	}
-	srv := s.(*xamboo.Server)
+	srv := s.(*cms.CMS)
 
 	app := ctx.Request.Form.Get("app")
 	scontext := ctx.Request.Form.Get("context")
@@ -211,12 +213,14 @@ func Install(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLa
 	// Get config to access things
 	config := srv.GetFullConfig()
 	result := []string{}
-	var err error
+	//	var err error
 
 	// Extract the module interface from the APP Plugin
 	done := false
+	var err error
 	for _, h := range config.Hosts {
-		for _, lib := range h.Applications {
+		for _, plg := range h.Plugins {
+			lib := applications.GetApplication(plg.Id)
 			ptr := fmt.Sprintf("%p", lib)
 			if ptr != app {
 				continue
@@ -224,7 +228,7 @@ func Install(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLa
 
 			compiledmodules := lib.GetCompiledModules()
 
-			var moduledata assets.Module = nil
+			var moduledata applications.Module = nil
 			moduledata = compiledmodules.Get(module)
 			if moduledata == nil {
 				continue
@@ -240,11 +244,10 @@ func Install(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLa
 
 			//			fmt.Println("MODULE AND CONTEXT FOUND:", moduledata, contextdata, prefix)
 			// do install/update
-
 			result, err = moduledata.Synchronize(datasource, prefix)
 			done = true
 
-			fmt.Println(err, result)
+			//			fmt.Println(err, result)
 			break
 		}
 		if done {
@@ -252,7 +255,14 @@ func Install(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLa
 		}
 	}
 
+	success := true
+	message := "Installed"
+	if err != nil {
+		success = false
+		message = "Error"
+	}
+
 	return map[string]interface{}{
-		"success": true, "messages": "Installed", "popup": false, "result": result,
+		"success": success, "messages": message, "popup": false, "result": result, "error": err,
 	}
 }
