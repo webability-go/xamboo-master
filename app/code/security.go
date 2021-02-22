@@ -1,4 +1,4 @@
-package main
+package code
 
 import (
 	"bufio"
@@ -8,11 +8,10 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/webability-go/xamboo"
-	"github.com/webability-go/xamboo/assets"
+	"github.com/webability-go/xamboo/cms/context"
 )
 
-func VerifyLogin(ctx *assets.Context) {
+func VerifyLogin(ctx *context.Context) {
 
 	// Any sent session ?
 	sessionid := ""
@@ -22,7 +21,7 @@ func VerifyLogin(ctx *assets.Context) {
 	if cookie != nil && len(cookie.Value) != 0 {
 		sessionid = cookie.Value
 	}
-	IP := ctx.Writer.(*xamboo.CoreWriter).RequestStat.IP
+	IP := "ip" // ctx.Writer.(*host.HostWriter).RequestStat.IP
 
 	// verify username, password, OrderSecurity connect/disconnect
 	order := ctx.Request.Form.Get("OrderSecurity")
@@ -36,7 +35,6 @@ func VerifyLogin(ctx *assets.Context) {
 
 		sysusername, _ := ctx.Sysparams.GetString("username")
 		syspassword, _ := ctx.Sysparams.GetString("password")
-
 		if sysusername == username && syspassword == md5password {
 			// Connect !
 			sessionid = CreateSession(ctx, sessionid, IP)
@@ -71,7 +69,7 @@ func VerifyLogin(ctx *assets.Context) {
 	ctx.Sessionparams.Set("username", sessiondata["username"])
 }
 
-func ReadSession(ctx *assets.Context, sessionid string) map[string]string {
+func ReadSession(ctx *context.Context, sessionid string) map[string]string {
 
 	rd, _ := ctx.Sysparams.GetString("resourcesdir")
 	path := rd + "/sessions/" + sessionid + ".conf"
@@ -97,7 +95,7 @@ func ReadSession(ctx *assets.Context, sessionid string) map[string]string {
 	return data
 }
 
-func WriteSession(ctx *assets.Context, sessionid string, data map[string]string) {
+func WriteSession(ctx *context.Context, sessionid string, data map[string]string) {
 
 	rd, _ := ctx.Sysparams.GetString("resourcesdir")
 	path := rd + "/sessions/" + sessionid + ".conf"
@@ -109,7 +107,7 @@ func WriteSession(ctx *assets.Context, sessionid string, data map[string]string)
 	ioutil.WriteFile(path, []byte(local), 0644)
 }
 
-func CreateSession(ctx *assets.Context, sessionid string, IP string) string {
+func CreateSession(ctx *context.Context, sessionid string, IP string) string {
 
 	cookiesize, _ := ctx.Sysparams.GetInt("cookiesize")
 
@@ -135,7 +133,7 @@ func CreateSession(ctx *assets.Context, sessionid string, IP string) string {
 	return sessionid
 }
 
-func DestroySession(ctx *assets.Context, sessionid string) {
+func DestroySession(ctx *context.Context, sessionid string) {
 
 	cookiename, _ := ctx.Sysparams.GetString("cookiename")
 

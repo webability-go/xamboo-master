@@ -1,11 +1,11 @@
-package main
+package code
 
 import (
 	"fmt"
 
 	"github.com/webability-go/xconfig"
 
-	serverassets "github.com/webability-go/xamboo/assets"
+	"github.com/webability-go/xamboo/cms/context"
 	"master/app/assets"
 )
 
@@ -13,7 +13,7 @@ type TContainers []*assets.Container
 
 var Containers = TContainers{}
 
-func (c *TContainers) Load(ctx *serverassets.Context, id string, configfile string) {
+func (c *TContainers) Load(ctx *context.Context, id string, configfile string) {
 
 	datacontainer := c.UpsertContainer(id, id, configfile)
 	// load container
@@ -127,10 +127,10 @@ func (c *TContainers) GetContext(containerid string, contextid string) *assets.C
 	return nil
 }
 
-func (c *TContainers) SaveContainers(ctx *serverassets.Context) {
+func (c *TContainers) SaveContainers(ctx *context.Context) {
 }
 
-func (c *TContainers) SaveContainer(ctx *serverassets.Context, containerid string) {
+func (c *TContainers) SaveContainer(ctx *context.Context, containerid string) {
 
 	container := c.GetContainer(containerid)
 
@@ -151,7 +151,7 @@ func (c *TContainers) SaveContainer(ctx *serverassets.Context, containerid strin
 	}
 }
 
-func (c *TContainers) SaveContext(ctx *serverassets.Context, containerid string, contextid string) {
+func (c *TContainers) SaveContext(ctx *context.Context, containerid string, contextid string) {
 
 	context := c.GetContext(containerid, contextid)
 	if context != nil {

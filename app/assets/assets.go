@@ -5,7 +5,7 @@ import (
 
 	"github.com/webability-go/xconfig"
 
-	"github.com/webability-go/xamboo/assets"
+	"github.com/webability-go/xamboo/cms/context"
 )
 
 // The context containers file is {resourcesdir}/containers.conf
@@ -27,7 +27,7 @@ type ContainersList interface {
 	fmt.Stringer   // please implement String()
 	fmt.GoStringer // Please implement GoString()
 
-	Load(ctx *assets.Context, id string, contextfile string)
+	Load(ctx *context.Context, id string, contextfile string)
 	UpsertContainer(containerid string, newid string, path string) *Container
 	UpsertContext(containerid string, contextid string, newid string, path string) *Context
 
@@ -36,11 +36,11 @@ type ContainersList interface {
 	GetContext(containerid string, contextid string) *Context
 
 	// save only the list of containers ~/resources/contextscontainers.conf
-	SaveContainers(ctx *assets.Context)
+	SaveContainers(ctx *context.Context)
 	// save only the container contexts config ~/config/contexts.conf
-	SaveContainer(ctx *assets.Context, containerid string)
+	SaveContainer(ctx *context.Context, containerid string)
 	// save only the context config ~/config/ID.conf
-	SaveContext(ctx *assets.Context, containerid string, contextid string)
+	SaveContext(ctx *context.Context, containerid string, contextid string)
 }
 
 func (c *Container) String() string {

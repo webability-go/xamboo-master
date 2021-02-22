@@ -6,14 +6,15 @@ import (
 
 	"github.com/webability-go/xcore/v2"
 
-	"github.com/webability-go/xamboo"
-	"github.com/webability-go/xamboo/assets"
+	"github.com/webability-go/xamboo/applications"
+	"github.com/webability-go/xamboo/cms"
+	"github.com/webability-go/xamboo/cms/context"
 	"github.com/webability-go/xmodules/base"
 
 	"master/app/bridge"
 )
 
-func Run(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
+func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
 	ok := bridge.Setup(ctx, bridge.USER)
 	if !ok {
@@ -22,7 +23,7 @@ func Run(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLangua
 
 	module := ctx.Request.Form.Get("module")
 
-	data := generateData(ctx, s.(*xamboo.Server), module)
+	data := generateData(ctx, s.(*cms.CMS), module)
 
 	params := &xcore.XDataset{
 		"module": module,
@@ -32,30 +33,41 @@ func Run(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLangua
 	return template.Execute(params)
 }
 
-func generateData(ctx *assets.Context, s *xamboo.Server, module string) string {
+type cc struct {
+	Ptr              string
+	ID               string
+	Ctxid            string
+	Modversion       string
+	Installedversion string
+	Prefix           string
+}
+
+func generateData(ctx *context.Context, s *cms.CMS, module string) string {
 
 	config := s.GetFullConfig()
 	data := "<table class=\"module-table\">"
-	data += "<tr><td>Host/Applicación</td><td>Contexto</td><td>Versión compilada</td><td>Versión instalada</td><td>Prefijo</td><td>Comandos</td>"
+	data += "<tr><td>Applicación</td><td>Contexto</td><td>Versión compilada</td><td>Versión instalada</td><td>Prefijo</td><td>Comandos</td>"
 
 	// 1. Get all the contexts with and without the module authorized
+	contextcontainerslist := map[string]cc{}
 
 	// Carga los APPs Libraries de cada Host config
 	for _, h := range config.Hosts {
 
-		for id, lib := range h.Applications {
+		for _, plg := range h.Plugins {
+			lib := applications.GetApplication(plg.Id)
 
 			configfile := lib.GetDatasourcesConfigFile()
+
 			contextcontainer := lib.GetDatasourceSet()
 			icompiledmodules := lib.GetCompiledModules()
 			compiledmodules := icompiledmodules.(*base.Modules)
 
-			bridge.Containers.Load(ctx, h.Name+"_"+id, configfile)
-			container := bridge.Containers.GetContainer(h.Name + "_" + id)
+			bridge.Containers.Load(ctx, h.Name+"_"+plg.Name, configfile)
+			container := bridge.Containers.GetContainer(h.Name + "_" + plg.Name)
 			contexts := container.Contexts
 
 			for _, context := range contexts {
-
 				if context.Config == nil {
 					continue // nothing to scan: only config link exists
 				}
@@ -64,7 +76,7 @@ func generateData(ctx *assets.Context, s *xamboo.Server, module string) string {
 					continue // nothing to show
 				}
 
-				var moduledata assets.Module = nil
+				var moduledata applications.Module = nil
 				moduledata = compiledmodules.Get(module)
 				if moduledata == nil {
 					continue
@@ -85,14 +97,14 @@ func generateData(ctx *assets.Context, s *xamboo.Server, module string) string {
 					}
 					ptr := fmt.Sprintf("%p", lib)
 
-					data += "<tr>"
-					data += "<td>" + h.Name + " / "
-					data += id + " [" + ptr + "]</td>"
-					data += "<td>" + context.ID + "</td>"
-					data += "<td>" + modversion + "</td>"
-					data += "<td>" + installedversion + "</td>"
-					data += "<td>" + modprefix + "</td>"
-					data += "<td>[INSTALAR] [DESINSTALAR]</td>"
+					contextcontainerslist[ptr+context.ID] = cc{
+						Ptr:              ptr,
+						ID:               plg.Name,
+						Ctxid:            context.ID,
+						Modversion:       modversion,
+						Installedversion: installedversion,
+						Prefix:           modprefix,
+					}
 
 					// Verify if the module is compiled/installed for this DB
 					/*
@@ -157,20 +169,42 @@ func generateData(ctx *assets.Context, s *xamboo.Server, module string) string {
 			}
 		}
 	}
+
+	for _, cc := range contextcontainerslist {
+		data += "<tr>"
+		data += "<td>" + cc.ID + " [" + cc.Ptr + "]</td>"
+		data += "<td>" + cc.Ctxid + "</td>"
+		data += "<td>" + cc.Modversion + "</td>"
+		data += "<td>" + cc.Installedversion + "</td>"
+		data += "<td>" + cc.Prefix + "</td>"
+
+		data += "<td>"
+		if cc.Installedversion == "" {
+			data += "[<span style=\"background-color: #dfd; cursor: pointer;\" onclick=\"install('" + cc.Ptr + "', '" + cc.Ctxid + "', '" + module + "', '" + cc.Prefix + "');\">INSTALAR</span>]"
+		} else if cc.Installedversion != cc.Modversion {
+			data += "[<span style=\"background-color: #ddf; cursor: pointer;\" onclick=\"upgrade('" + cc.Ptr + "', '" + cc.Ctxid + "', '" + module + "', '" + cc.Prefix + "');\">ACTUALIZAR</span>]"
+		}
+		if cc.Installedversion != "" {
+			data += "[<span style=\"background-color: #ddf; cursor: pointer;\" onclick=\"reinstall('" + cc.Ptr + "', '" + cc.Ctxid + "', '" + module + "', '" + cc.Prefix + "');\">REINSTALAR</span>]"
+			data += "[<span style=\"background-color: #fdd; cursor: pointer;\" onclick=\"uninstall('" + cc.Ptr + "', '" + cc.Ctxid + "', '" + module + "', '" + cc.Prefix + "');\">DESINSTALAR</span>]"
+		}
+		data += "</td>"
+
+	}
+
 	data += "</table>"
 
 	return data
 }
 
-func Install(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
+func Install(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
 	ok := bridge.Setup(ctx, bridge.USER)
 	if !ok {
 		return ""
 	}
-	srv := s.(*xamboo.Server)
+	srv := s.(*cms.CMS)
 
-	host := ctx.Request.Form.Get("host")
 	app := ctx.Request.Form.Get("app")
 	scontext := ctx.Request.Form.Get("context")
 	module := ctx.Request.Form.Get("module")
@@ -178,43 +212,57 @@ func Install(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLa
 
 	// Get config to access things
 	config := srv.GetFullConfig()
+	result := []string{}
+	//	var err error
 
 	// Extract the module interface from the APP Plugin
+	done := false
+	var err error
 	for _, h := range config.Hosts {
-		if h.Name != host {
-			continue
-		}
-		for id, lib := range h.Applications {
-			if id != app {
+		for _, plg := range h.Plugins {
+			lib := applications.GetApplication(plg.Id)
+			ptr := fmt.Sprintf("%p", lib)
+			if ptr != app {
 				continue
 			}
 
 			compiledmodules := lib.GetCompiledModules()
 
-			var moduledata assets.Module = nil
+			var moduledata applications.Module = nil
 			moduledata = compiledmodules.Get(module)
 			if moduledata == nil {
 				continue
 			}
 
-			contextcontainer := lib.GetDatasourceSet()
+			datasourceset := lib.GetDatasourceSet()
 
-			contextdata := contextcontainer.GetDatasource(scontext)
+			datasource := datasourceset.GetDatasource(scontext)
 
-			if contextdata == nil {
+			if datasource == nil {
 				continue
 			}
 
-			fmt.Println("MODULE AND CONTEXT FOUND:", moduledata, contextdata, prefix)
+			//			fmt.Println("MODULE AND CONTEXT FOUND:", moduledata, contextdata, prefix)
 			// do install/update
+			result, err = moduledata.Synchronize(datasource, prefix)
+			done = true
 
-			result, err := moduledata.Synchronize(contextdata, prefix)
-
-			fmt.Println(err, result)
+			//			fmt.Println(err, result)
+			break
+		}
+		if done {
+			break
 		}
 	}
 
+	success := true
+	message := "Installed"
+	if err != nil {
+		success = false
+		message = "Error"
+	}
+
 	return map[string]interface{}{
-		"success": true, "messages": "Installed", "popup": false,
+		"success": success, "messages": message, "popup": false, "result": result, "error": err,
 	}
 }

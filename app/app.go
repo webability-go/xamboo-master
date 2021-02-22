@@ -1,59 +1,68 @@
 package main
 
 import (
-	"github.com/webability-go/xamboo/assets"
+	"golang.org/x/text/language"
+
+	"github.com/webability-go/xamboo/applications"
+	"github.com/webability-go/xamboo/cms/context"
+	"github.com/webability-go/xamboo/config"
 
 	"github.com/webability-go/xmodules/base"
+	"github.com/webability-go/xmodules/tools"
 
-	//	_ "github.com/webability-go/xmodules/client"
-	_ "github.com/webability-go/xmodules/clientlink"
-	_ "github.com/webability-go/xmodules/clientp18n"
-	_ "github.com/webability-go/xmodules/clientsecurity"
-	_ "github.com/webability-go/xmodules/country"
-	_ "github.com/webability-go/xmodules/ingredient"
-	_ "github.com/webability-go/xmodules/material"
-	_ "github.com/webability-go/xmodules/metric"
-	_ "github.com/webability-go/xmodules/stat"
-	_ "github.com/webability-go/xmodules/suggestions"
-	_ "github.com/webability-go/xmodules/translation"
-	_ "github.com/webability-go/xmodules/usda"
-	_ "github.com/webability-go/xmodules/user"
-	_ "github.com/webability-go/xmodules/userlink"
-	//	_ "github.com/webability-go/xmodules/usermenu"
-	_ "github.com/webability-go/xmodules/wiki"
+	"master/app/code"
 )
 
 const (
-	VERSION              = "1.0.0"
-	DATASOURCECONFIGFILE = "./master/config/datasources.conf"
+	VERSION = "0.0.1"
 )
 
 var (
-	Container   *base.Container
 	Application = LocalApp{}
+	Containers  = code.Containers
 )
 
 func init() {
-	Container = base.Create(DATASOURCECONFIGFILE)
+	tools.Language = language.Spanish
 }
 
 type LocalApp struct{}
 
-func (la *LocalApp) StartHost(h assets.Host) {
+func (la *LocalApp) StartHost(h config.Host) {
 }
 
-func (la *LocalApp) StartContext(ctx *assets.Context) {
-	VerifyLogin(ctx)
+func (la *LocalApp) StartContext(ctx *context.Context) {
+	code.VerifyLogin(ctx)
 }
 
 func (la *LocalApp) GetDatasourcesConfigFile() string {
-	return DATASOURCECONFIGFILE
+	return ""
 }
 
-func (la *LocalApp) GetDatasourceSet() assets.DatasourceSet {
-	return Container
+func (la *LocalApp) GetDatasourceSet() applications.DatasourceSet {
+	return nil
 }
 
-func (la *LocalApp) GetCompiledModules() assets.ModuleSet {
+func (la *LocalApp) GetCompiledModules() applications.ModuleSet {
 	return base.ModulesList
+}
+
+func VerifyLogin(ctx *context.Context) {
+	code.VerifyLogin(ctx)
+}
+
+func GetMD5Hash(text string) string {
+	return code.GetMD5Hash(text)
+}
+
+func CreateKey(length int, chartype int) string {
+	return code.CreateKey(length, chartype)
+}
+
+func ReloadConfig() error {
+	return code.ReloadConfig()
+}
+
+func GetMainConfig() map[string]interface{} {
+	return code.GetMainConfig()
 }

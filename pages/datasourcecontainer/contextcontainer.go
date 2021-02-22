@@ -7,19 +7,19 @@ import (
 	"github.com/webability-go/xdominion"
 	"github.com/webability-go/xdommask"
 
+	"github.com/webability-go/xamboo/cms"
+	"github.com/webability-go/xamboo/cms/context"
 	"github.com/webability-go/xamboo/master/app/bridge"
-	"github.com/webability-go/xamboo/server"
-	"github.com/webability-go/xamboo/server/assets"
 )
 
-func Run(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
+func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
 	ok := bridge.Setup(ctx, bridge.USER)
 	if !ok {
 		return ""
 	}
 
-	mask := getMask(ctx, s.(*server.Server)).Compile()
+	mask := getMask(ctx, s.(*cms.CMS)).Compile()
 	xmlmask, _ := xml.Marshal(mask)
 	params := &xcore.XDataset{
 		"FORM": string(xmlmask),
@@ -28,7 +28,7 @@ func Run(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLangua
 	return template.Execute(params)
 }
 
-func searchLog(s *server.Server, ctx *assets.Context, host string, app string) string {
+func searchLog(s *cms.CMS, ctx *assets.Context, host string, app string) string {
 	config := s.GetFullConfig()
 
 	// Carga los APPs Libraries de cada Host config
@@ -55,7 +55,7 @@ func searchLog(s *server.Server, ctx *assets.Context, host string, app string) s
 	return ""
 }
 
-func getMask(ctx *assets.Context, s *server.Server) *xdommask.Mask {
+func getMask(ctx *context.Context, s *cms.CMS) *xdommask.Mask {
 
 	host := ctx.Request.Form.Get("host")
 	app := ctx.Request.Form.Get("app")
@@ -153,7 +153,7 @@ func getMask(ctx *assets.Context, s *server.Server) *xdommask.Mask {
 	return mask
 }
 
-func Formcontainer(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
+func Formcontainer(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
 	ok := bridge.Setup(ctx, bridge.USER)
 	if !ok {
@@ -191,7 +191,7 @@ func Formcontainer(ctx *assets.Context, template *xcore.XTemplate, language *xco
 		if success {
 			// build container and write container
 			// be sure we load the containers
-			searchLog(s.(*server.Server), ctx, host, app)
+			searchLog(s.(*cms.CMS), ctx, host, app)
 			container := bridge.Containers.GetContainer(host + "_" + app)
 			container.LogFile = path
 			bridge.Containers.SaveContainer(ctx, host+"_"+app)

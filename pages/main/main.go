@@ -3,13 +3,13 @@ package main
 import (
 	"github.com/webability-go/xcore/v2"
 
-	"github.com/webability-go/xamboo/assets"
+	"github.com/webability-go/xamboo/cms/context"
 	"github.com/webability-go/xamboo/config"
 
 	"master/app/bridge"
 )
 
-func Run(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
+func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
 	ok := bridge.Setup(ctx, bridge.ANY)
 	if !ok {
@@ -38,7 +38,7 @@ func Run(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLangua
 	return template.Execute(params)
 }
 
-func Formlogin(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
+func Formlogin(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
 	ok := bridge.Setup(ctx, bridge.ANY)
 	if !ok {
@@ -69,7 +69,7 @@ func Formlogin(ctx *assets.Context, template *xcore.XTemplate, language *xcore.X
 	return data
 }
 
-func Formpassword(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
+func Formpassword(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
 	ok := bridge.Setup(ctx, bridge.ANY)
 	if !ok {
@@ -82,7 +82,7 @@ func Formpassword(ctx *assets.Context, template *xcore.XTemplate, language *xcor
 	return "OK"
 }
 
-func Disconnect(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
+func Disconnect(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
 	ok := bridge.Setup(ctx, bridge.ANY)
 	if !ok {

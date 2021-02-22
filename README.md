@@ -1,46 +1,37 @@
-@UTF-8
-
 Xamboo-Master for GO v1
 =============================
 
+The full manual is on xamboo github:
+
+https://github.com/webability-go/xamboo
+
+
 Xamboo-Master is a system plugin for the Xamboo system to administrate the application with a web interface
-
-Xamboo is the result of over 15 years of manufacturing engineering frameworks, originally written for PHP 7+ and now ported to GO 1.8+
-
-It is a very high quality framework for CMS, made in GO 1.8 or higher, fully object-oriented and strong to distribute code into Web portals with heavy load and REST APIs optimization.
-
-Xamboo is freeware, and uses several other freeware components (XConfig, XCore)
-
-INSTALATION AND COMPILATION
-=============================
-
-After installing the Xamboo system, creates a master directory and download the master:
-
-For instance, install the xamboo in /home/sites/xamboo
-
-$ cd /home/sites/xamboo
-$ mkdir master
-$ git init
-
-Pull the last verion of Xamboo-Master
-
-$ git pull https://github.com/webability-go/xamboo-master.git
-
-Edit the master/config.json file to adapt the listeners and hosts to your IPs and domain.
-Link the master/config.json to your main system config.json adding it in the "include":[] section
-
-Compile and restart your xamboo.
-
-Enter in the master site to configure your access credentials.
-
+for the xamboo configuration and maintenance, and xmodules installation.
 
 
 TO DO
 =======================
 
+- Components admin and components config admin
+- Engines admin
+- Datasources container admin
+- Datasources admin
+- Listeners admin
+- Hosts admin
+- plugins admin
+- Xmodules admin
 
 Version Changes Control
 =======================
+
+V0.0.4 - 2021-02-21
+-----------------------
+- New option added to the menu to reload the configuration in the server
+
+V0.0.3 - 2021-02-12
+-----------------------
+- Adaptation to Xamboo v1.5.0 not compatible with previous versions
 
 V0.0.2 - 2020-01-04
 -----------------------

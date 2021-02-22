@@ -8,6 +8,20 @@
 
   <entry id="STATS.TITLE"><![CDATA[Estadísticas:]]></entry>
 
+  <entry id="LIVESTATS.TITLE"><![CDATA[Estadísticas en vivo:]]></entry>
+  <entry id="livestats.help.summary"><![CDATA[Click aquí para visualizar las estadísticas en vivo del server.]]></entry>
+  <entry id="livestats.help.title"><![CDATA[Ver estadísticas en vivo:]]></entry>
+  <entry id="livestats.help.description"><![CDATA[Este botón permite visualizar las estadísticas del servido Xamboo en vivo.]]></entry>
+  <entry id="LIVESTATS"><![CDATA[E<u>s</u>tadísticas]]></entry>
+  <entry id="LIVESTATSSHORTCUT"><![CDATA[alt+s]]></entry>
+
+  <entry id="SYSTEM.TITLE"><![CDATA[Sistema:]]></entry>
+
+  <entry id="SYSTEMRELOAD.TITLE"><![CDATA[Recargar la configuración:]]></entry>
+  <entry id="livestats.help.summary"><![CDATA[Click aquí para recargar la configuración.]]></entry>
+  <entry id="livestats.help.title"><![CDATA[Recargar la configuración:]]></entry>
+  <entry id="livestats.help.description"><![CDATA[Click aquí para recargar la configuración.]]></entry>
+
   <entry id="CONFIG.TITLE"><![CDATA[Configuración:]]></entry>
 
   <entry id="MAINCONFIG.TITLE"><![CDATA[Configuración global:]]></entry>

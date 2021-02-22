@@ -2,19 +2,20 @@ package main
 
 import (
 	"fmt"
-	//	"strings"
+	"strings"
 
 	"github.com/webability-go/xcore/v2"
 
-	"github.com/webability-go/xamboo"
-	"github.com/webability-go/xamboo/assets"
+	"github.com/webability-go/xamboo/applications"
+	"github.com/webability-go/xamboo/cms"
+	"github.com/webability-go/xamboo/cms/context"
 
 	"github.com/webability-go/xmodules/base"
 
 	"master/app/bridge"
 )
 
-func Run(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
+func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
 	ok := bridge.Setup(ctx, bridge.USER)
 	if !ok {
@@ -29,7 +30,7 @@ func Run(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLangua
 	return template.Execute(params)
 }
 
-func Menu(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
+func Menu(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
 	ok := bridge.Setup(ctx, bridge.USER)
 	if !ok {
@@ -39,29 +40,33 @@ func Menu(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLangu
 	Order := ctx.Request.Form.Get("Order")
 
 	if Order == "get" {
-		return getMenu(ctx, s.(*xamboo.Server), language)
+		return getMenu(ctx, s.(*cms.CMS), language)
 	}
 	if Order == "getchildren" {
 		Father := ctx.Request.Form.Get("father")
 		switch Father {
 		case "files":
-			return getFiles(ctx, s.(*xamboo.Server), language)
+			return getFiles(ctx, s.(*cms.CMS), language)
 		case "services":
-			return getServices(ctx, s.(*xamboo.Server), language)
+			return getServices(ctx, s.(*cms.CMS), language)
 		case "listeners":
-			return getListeners(ctx, s.(*xamboo.Server), language)
+			return getListeners(ctx, s.(*cms.CMS), language)
 		case "hosts":
-			return getHosts(ctx, s.(*xamboo.Server), language)
+			return getHosts(ctx, s.(*cms.CMS), language)
 		case "engines":
-			return getEngines(ctx, s.(*xamboo.Server), language)
+			return getEngines(ctx, s.(*cms.CMS), language)
 		case "contexts":
-			return getContexts(ctx, s.(*xamboo.Server), language)
+			return getContexts(ctx, s.(*cms.CMS), language)
 		case "contextcontainers":
-			return getContextContainers(ctx, s.(*xamboo.Server), language)
+			return getContextContainers(ctx, s.(*cms.CMS), language)
 		case "modules":
-			return getModules(ctx, s.(*xamboo.Server), language)
+			return getModules(ctx, s.(*cms.CMS), language)
+		default:
+			if Father[0:4] == "ctx-" { // modules of context
+				return getModulesOfContainer(ctx, s.(*cms.CMS), language, Father[4:])
+			}
 		}
-		return getMenu(ctx, s.(*xamboo.Server), language)
+		return getMenu(ctx, s.(*cms.CMS), language)
 	}
 	if Order == "openclose" {
 
@@ -75,7 +80,7 @@ func Menu(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLangu
 	}
 }
 
-func getMenu(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) map[string]interface{} {
+func getMenu(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
 
 	rows := []interface{}{}
 
@@ -102,6 +107,38 @@ func getMenu(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) m
 	rows = append(rows, optr)
 
 	// TODO(phil) Put here all the stats options
+	// live stats
+	optr = map[string]interface{}{
+		"id":        "livestats",
+		"template":  "livestats",
+		"loadable":  false,
+		"closeable": false,
+		"closed":    false,
+		"title":     language.Get("LIVESTATS.TITLE"),
+	}
+	rows = append(rows, optr)
+
+	// System
+	optr = map[string]interface{}{
+		"id":        "systemtitle",
+		"template":  "title",
+		"loadable":  false,
+		"closeable": false,
+		"closed":    false,
+		"title":     language.Get("SYSTEM.TITLE"),
+	}
+	rows = append(rows, optr)
+
+	// 0. main config line
+	optr = map[string]interface{}{
+		"id":        "systemreload",
+		"template":  "systemreload",
+		"loadable":  false,
+		"closeable": false,
+		"closed":    false,
+		"title":     language.Get("SYSTEMRELOAD.TITLE"),
+	}
+	rows = append(rows, optr)
 
 	// config title
 	optr = map[string]interface{}{
@@ -271,7 +308,7 @@ func getMenu(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) m
 					}
 
 					for _, authmod := range authorizedmodules {
-						xauthmod := strings.Split(authmod, "|")
+						xauthmod := strings.Split(authmod, "/")
 						modid := xauthmod[0]
 						modprefix := ""
 						if len(xauthmod) > 1 {
@@ -337,7 +374,7 @@ func getMenu(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) m
 					for _, compmod := range *compiledmodules {
 						found := false
 						for _, authmod := range authorizedmodules {
-							xauthmod := strings.Split(authmod, "|")
+							xauthmod := strings.Split(authmod, ""/"")
 							if compmod.GetID() == xauthmod[0] {
 								found = true
 								break
@@ -374,7 +411,7 @@ func getMenu(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) m
 
 }
 
-func getFiles(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) map[string]interface{} {
+func getFiles(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
 
 	rows := []interface{}{}
 
@@ -400,7 +437,7 @@ func getFiles(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) 
 
 }
 
-func getServices(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) map[string]interface{} {
+func getServices(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
 
 	rows := []interface{}{}
 
@@ -446,7 +483,7 @@ func getServices(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguag
 
 }
 
-func getListeners(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) map[string]interface{} {
+func getListeners(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
 
 	rows := []interface{}{}
 
@@ -475,7 +512,7 @@ func getListeners(ctx *assets.Context, s *xamboo.Server, language *xcore.XLangua
 
 }
 
-func getHosts(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) map[string]interface{} {
+func getHosts(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
 
 	rows := []interface{}{}
 
@@ -504,7 +541,7 @@ func getHosts(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) 
 
 }
 
-func getEngines(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) map[string]interface{} {
+func getEngines(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
 
 	rows := []interface{}{}
 
@@ -529,36 +566,52 @@ func getEngines(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage
 
 }
 
-func getContexts(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) map[string]interface{} {
+type ct struct {
+	Ptr string
+	ID  string
+}
+
+func getContexts(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
 
 	rows := []interface{}{}
 
 	config := s.GetFullConfig()
 
-	//	contextslist := map[string]string{} // id => file
+	contextslist := map[string]ct{}
 	// TODO(phil) Add stats fo # used in applications
 
 	for _, h := range config.Hosts {
-		for id, lib := range h.Applications {
+		for _, plg := range h.Plugins {
 
+			lib := applications.GetApplication(plg.Id)
 			configfile := lib.GetDatasourcesConfigFile()
-			bridge.Containers.Load(ctx, h.Name+"_"+id, configfile)
-			container := bridge.Containers.GetContainer(h.Name + "_" + id)
+			bridge.Containers.Load(ctx, h.Name+"_"+plg.Name, configfile)
+			container := bridge.Containers.GetContainer(h.Name + "_" + plg.Name)
 			contexts := container.Contexts
+			ptr := fmt.Sprintf("%p", lib)
 
 			for _, context := range contexts {
-				opt := map[string]interface{}{
-					"id":        "ctx-" + context.ID,
-					"ctxid":     context.ID,
-					"template":  "context",
-					"name":      context.ID,
-					"father":    "contexts",
-					"loadable":  false,
-					"closeable": false,
+				contextslist[ptr+"/"+context.ID] = ct{
+					Ptr: ptr,
+					ID:  context.ID,
 				}
-				rows = append(rows, opt)
 			}
 		}
+	}
+
+	for ctxid, ct := range contextslist {
+		opt := map[string]interface{}{
+			"id":        "ctx-" + ctxid,
+			"ctxid":     ctxid,
+			"template":  "context",
+			"name":      ct.ID + " [" + ct.Ptr + "]",
+			"father":    "contexts",
+			"loadable":  true,
+			"loaded":    false,
+			"closeable": true,
+			"closed":    true,
+		}
+		rows = append(rows, opt)
 	}
 
 	return map[string]interface{}{
@@ -567,31 +620,46 @@ func getContexts(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguag
 
 }
 
-func getContextContainers(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) map[string]interface{} {
+type cc struct {
+	Ptr        string
+	ID         string
+	ConfigFile string
+}
+
+func getContextContainers(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
 
 	rows := []interface{}{}
 
 	config := s.GetFullConfig()
 
-	//	contextcontainerslist := map[string]string{} // id => file
+	contextcontainerslist := map[string]cc{}
 	// TODO(phil) Add stats fo # used in applications
 
 	for _, h := range config.Hosts {
-		for id, lib := range h.Applications {
+		for _, plg := range h.Plugins {
 
+			lib := applications.GetApplication(plg.Id)
 			ptr := fmt.Sprintf("%p", lib)
 			configfile := lib.GetDatasourcesConfigFile()
 
-			opt := map[string]interface{}{
-				"id":        "ctxcnt-" + ptr,
-				"template":  "contextcontainer",
-				"name":      id + " [" + ptr + "] " + configfile,
-				"father":    "contextcontainers",
-				"loadable":  false,
-				"closeable": false,
+			contextcontainerslist[ptr] = cc{
+				Ptr:        ptr,
+				ID:         plg.Name,
+				ConfigFile: configfile,
 			}
-			rows = append(rows, opt)
 		}
+	}
+
+	for _, cc := range contextcontainerslist {
+		opt := map[string]interface{}{
+			"id":        "ctxcnt-" + cc.Ptr,
+			"template":  "contextcontainer",
+			"name":      cc.ID + " [" + cc.Ptr + "] " + cc.ConfigFile,
+			"father":    "contextcontainers",
+			"loadable":  false,
+			"closeable": false,
+		}
+		rows = append(rows, opt)
 	}
 
 	return map[string]interface{}{
@@ -600,27 +668,27 @@ func getContextContainers(ctx *assets.Context, s *xamboo.Server, language *xcore
 
 }
 
-func getModules(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage) map[string]interface{} {
+func getModules(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
 
 	rows := []interface{}{}
 
 	config := s.GetFullConfig()
 
-	modules := map[string]assets.Module{}
+	modules := map[string]applications.Module{}
 
 	// Carga los APPs Libraries de cada Host config
 	for _, h := range config.Hosts {
-		for _, application := range h.Applications {
+		for _, plg := range h.Plugins {
 
 			// TODO(phil) add and calculate how many modules are authorized and installed
-
+			application := applications.GetApplication(plg.Id)
 			icompiledmodules := application.GetCompiledModules()
 			compiledmodules := icompiledmodules.(*base.Modules)
 
 			for _, mod := range *compiledmodules {
 				modid := mod.GetID()
 				modversion := mod.GetVersion()
-				modules[modid+"|"+modversion] = mod
+				modules[modid+"/"+modversion] = mod
 			}
 		}
 	}
@@ -644,4 +712,170 @@ func getModules(ctx *assets.Context, s *xamboo.Server, language *xcore.XLanguage
 		"row": rows,
 	}
 
+}
+
+type md struct {
+	Ptr              string
+	ID               string
+	Ctxid            string
+	Modversion       string
+	Installedversion string
+	Prefix           string
+}
+
+func getModulesOfContainer(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage, container string) map[string]interface{} {
+
+	rows := []interface{}{}
+
+	config := s.GetFullConfig()
+	cnt := strings.Split(container, "/")
+
+	moduleslist := map[string]md{}
+
+	// Carga los APPs Libraries de cada Host config
+	for _, h := range config.Hosts {
+
+		for _, plg := range h.Plugins {
+
+			lib := applications.GetApplication(plg.Id)
+			ptr := fmt.Sprintf("%p", lib)
+			if ptr != cnt[0] {
+				continue
+			}
+
+			configfile := lib.GetDatasourcesConfigFile()
+			//			contextcontainer := lib.GetDatasourceSet()
+			icompiledmodules := lib.GetCompiledModules()
+			compiledmodules := icompiledmodules.(*base.Modules)
+
+			bridge.Containers.Load(ctx, h.Name+"_"+plg.Name, configfile)
+			container := bridge.Containers.GetContainer(h.Name + "_" + plg.Name)
+			contexts := container.Contexts
+
+			for _, context := range contexts {
+
+				if context.Config == nil {
+					continue // nothing to scan: only config link exists
+				}
+
+				if context.ID != cnt[1] {
+					continue
+				}
+
+				authorizedmodules, _ := context.Config.GetStringCollection("module")
+				if len(authorizedmodules) == 0 && len(*compiledmodules) == 0 {
+					continue // nothing to show
+				}
+				fmt.Println(cnt, context.ID, authorizedmodules)
+
+				for _, authmod := range authorizedmodules {
+					xauthmod := strings.Split(authmod, "|")
+					modid := xauthmod[0]
+					modprefix := ""
+					if len(xauthmod) > 1 {
+						modprefix = xauthmod[1]
+					}
+
+					moduleslist[modid+"/"+modprefix] = md{
+						Ptr:              ptr,
+						ID:               modid,
+						Ctxid:            context.ID,
+						Modversion:       "",
+						Installedversion: "",
+						Prefix:           modprefix,
+					}
+
+					// Verify if the module is compiled/installed for this DB
+					/*
+						modversion := ""
+						installedversion := ""
+						for _, mod := range *compiledmodules {
+							if modid == mod.GetID() {
+								modversion = mod.GetVersion()
+								if thiscontext != nil {
+									installedversion = mod.GetInstalledVersion(thiscontext)
+								}
+								break
+							}
+						}
+					*/
+
+					/*
+						// Get version from module table to know installed version etc
+						prefix := ""
+						if modprefix != "" {
+							prefix = "[" + modprefix + "]"
+						}
+
+						icon := "module.png"
+						status := language.Get("OK")
+						version := ""
+						if modversion != "" {
+							version = "v" + modversion
+							if installedversion == "" {
+								status = language.Get("NOTINSTALLED")
+								icon = "module-installable.png" // not installed
+							} else if modversion != installedversion {
+								status = language.Get("UPGRADE")
+								icon = "module-updatable.png" // have to update
+							}
+						} else {
+							status = language.Get("NOTCOMPILE")
+							icon = "module-notcompiled.png" // not compiled
+						}
+					*/
+
+				}
+				/*
+					// Now we add compiled modules not authorized
+					for _, compmod := range *compiledmodules {
+						found := false
+						for _, authmod := range authorizedmodules {
+							xauthmod := strings.Split(authmod, "/")
+							if compmod.GetID() == xauthmod[0] {
+								found = true
+								break
+							}
+						}
+						if found {
+							continue
+						}
+
+					}
+				*/
+			}
+		}
+	}
+
+	for _, cc := range moduleslist {
+
+		opt := map[string]interface{}{
+			"id":        "ctxmod-" + cc.Ptr + "/" + cc.Ctxid + "/" + cc.ID + "/" + cc.Prefix,
+			"modid":     cc.ID,
+			"template":  "module",
+			"icon":      "module.png",
+			"name":      cc.ID + " " + cc.Modversion,
+			"father":    "ctx-" + container,
+			"loadable":  false,
+			"closeable": false,
+		}
+		rows = append(rows, opt)
+	}
+
+	return map[string]interface{}{
+		"row": rows,
+	}
+
+}
+
+func Reloadconfig(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
+
+	ok := bridge.Setup(ctx, bridge.USER)
+	if !ok {
+		return ""
+	}
+
+	bridge.ReloadConfig()
+
+	return "OK"
 }

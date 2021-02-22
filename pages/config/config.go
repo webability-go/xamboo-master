@@ -8,15 +8,12 @@ import (
 	"github.com/webability-go/xcore/v2"
 	"github.com/webability-go/xdommask"
 
-	//	"github.com/webability-go/xamboo"
-	"github.com/webability-go/xamboo/assets"
-
-	//	"github.com/webability-go/xmodules/base"
+	"github.com/webability-go/xamboo/cms/context"
 
 	"master/app/bridge"
 )
 
-func Run(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
+func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
 	ok := bridge.Setup(ctx, bridge.USER)
 	if !ok {
@@ -177,7 +174,7 @@ func getMask(lang string, country string) *xdommask.Mask {
 	return mask
 }
 
-func Formconfig(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
+func Formconfig(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
 	ok := bridge.Setup(ctx, bridge.USER)
 	if !ok {

@@ -1,4 +1,4 @@
-package main
+package code
 
 import (
 	"encoding/json"
@@ -8,6 +8,10 @@ import (
 
 	"github.com/webability-go/xamboo/config"
 )
+
+func ReloadConfig() error {
+	return config.OverLoad(config.Config.File)
+}
 
 func GetMainConfig() map[string]interface{} {
 

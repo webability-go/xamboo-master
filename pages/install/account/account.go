@@ -6,12 +6,12 @@ import (
 	"github.com/webability-go/xcore/v2"
 	"github.com/webability-go/xdommask"
 
-	"github.com/webability-go/xamboo/assets"
+	"github.com/webability-go/xamboo/cms/context"
 
 	"master/app/bridge"
 )
 
-func Run(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
+func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
 	ok := bridge.Setup(ctx, bridge.NOTINSTALLED)
 	if !ok {
@@ -138,7 +138,7 @@ WA.toDOM('install|single|step3').className = 'installstepactual';
 	return mask
 }
 
-func Formaccount(ctx *assets.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
+func Formaccount(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
 	ok := bridge.Setup(ctx, bridge.NOTINSTALLED)
 	if !ok {

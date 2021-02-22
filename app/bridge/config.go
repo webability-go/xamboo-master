@@ -6,10 +6,11 @@ import (
 	"io/ioutil"
 	"plugin"
 
-	"github.com/webability-go/xamboo/assets"
+	"github.com/webability-go/xamboo/cms/context"
 )
 
 var GetMainConfig func() map[string]interface{}
+var ReloadConfig func() error
 
 func LinkConfig(lib *plugin.Plugin) error {
 
@@ -20,10 +21,17 @@ func LinkConfig(lib *plugin.Plugin) error {
 	}
 	GetMainConfig = fct.(func() map[string]interface{})
 
+	fct, err = lib.Lookup("ReloadConfig")
+	if err != nil {
+		fmt.Println(err)
+		return errors.New("ERROR: THE APPLICATION LIBRARY DOES NOT CONTAIN ReloadConfig FUNCTION")
+	}
+	ReloadConfig = fct.(func() error)
+
 	return nil
 }
 
-func GenerateConfig(ctx *assets.Context, L string, C string, serial string, username string, password string, email string) {
+func GenerateConfig(ctx *context.Context, L string, C string, serial string, username string, password string, email string) {
 
 	md5password := ""
 	if password != "" {
