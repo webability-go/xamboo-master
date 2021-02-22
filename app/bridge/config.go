@@ -10,6 +10,7 @@ import (
 )
 
 var GetMainConfig func() map[string]interface{}
+var ReloadConfig func() error
 
 func LinkConfig(lib *plugin.Plugin) error {
 
@@ -19,6 +20,13 @@ func LinkConfig(lib *plugin.Plugin) error {
 		return errors.New("ERROR: THE APPLICATION LIBRARY DOES NOT CONTAIN GetMainConfig FUNCTION")
 	}
 	GetMainConfig = fct.(func() map[string]interface{})
+
+	fct, err = lib.Lookup("ReloadConfig")
+	if err != nil {
+		fmt.Println(err)
+		return errors.New("ERROR: THE APPLICATION LIBRARY DOES NOT CONTAIN ReloadConfig FUNCTION")
+	}
+	ReloadConfig = fct.(func() error)
 
 	return nil
 }

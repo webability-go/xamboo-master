@@ -9,6 +9,10 @@ import (
 	"github.com/webability-go/xamboo/config"
 )
 
+func ReloadConfig() error {
+	return config.OverLoad(config.Config.File)
+}
+
 func GetMainConfig() map[string]interface{} {
 
 	// read main config file. The main config file is into the sysconfig "config" parameter

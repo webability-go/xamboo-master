@@ -84,6 +84,27 @@ function(e)
           </element>
         </template>
 
+        <!-- systemload -->
+        <template name="systemreload">
+          <element type="imageElement" classname="imagemenu" width="16" height="16" src="/skins/master/icons/systemreload.png"></element>
+          <element type="textElement" classname="textmenulink"><![CDATA[##SYSTEMRELOAD.TITLE##]]>
+            <help>
+              <summary><![CDATA[##systemreload.help.summary##]]></summary>
+              <title><![CDATA[##systemreload.help.title##]]></title>
+              <description><![CDATA[##systemreload.help.description##]]></description>
+            </help>
+            <event type="onclick">
+              <code><![CDATA[
+function(e)
+{
+  // reload config, then reload menu
+  WA.Managers.ajax.createRequest('/index/reloadconfig/json', 'post', '', function(request) { WA.$N('menu').reload(); }, true);
+}
+              ]]></code>
+            </event>
+          </element>
+        </template>
+
         <!-- Files -->
         <template name="files">
           <element type="imageElement" classname="imagemenu" width="16" height="16" src="/skins/master/icons/files.png"></element>

@@ -118,6 +118,28 @@ func getMenu(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[st
 	}
 	rows = append(rows, optr)
 
+	// System
+	optr = map[string]interface{}{
+		"id":        "systemtitle",
+		"template":  "title",
+		"loadable":  false,
+		"closeable": false,
+		"closed":    false,
+		"title":     language.Get("SYSTEM.TITLE"),
+	}
+	rows = append(rows, optr)
+
+	// 0. main config line
+	optr = map[string]interface{}{
+		"id":        "systemreload",
+		"template":  "systemreload",
+		"loadable":  false,
+		"closeable": false,
+		"closed":    false,
+		"title":     language.Get("SYSTEMRELOAD.TITLE"),
+	}
+	rows = append(rows, optr)
+
 	// config title
 	optr = map[string]interface{}{
 		"id":        "configtitle",
@@ -844,4 +866,16 @@ func getModulesOfContainer(ctx *context.Context, s *cms.CMS, language *xcore.XLa
 		"row": rows,
 	}
 
+}
+
+func Reloadconfig(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
+
+	ok := bridge.Setup(ctx, bridge.USER)
+	if !ok {
+		return ""
+	}
+
+	bridge.ReloadConfig()
+
+	return "OK"
 }

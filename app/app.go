@@ -59,6 +59,10 @@ func CreateKey(length int, chartype int) string {
 	return code.CreateKey(length, chartype)
 }
 
+func ReloadConfig() error {
+	return code.ReloadConfig()
+}
+
 func GetMainConfig() map[string]interface{} {
 	return code.GetMainConfig()
 }

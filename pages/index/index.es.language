@@ -15,6 +15,13 @@
   <entry id="LIVESTATS"><![CDATA[E<u>s</u>tadísticas]]></entry>
   <entry id="LIVESTATSSHORTCUT"><![CDATA[alt+s]]></entry>
 
+  <entry id="SYSTEM.TITLE"><![CDATA[Sistema:]]></entry>
+
+  <entry id="SYSTEMRELOAD.TITLE"><![CDATA[Recargar la configuración:]]></entry>
+  <entry id="livestats.help.summary"><![CDATA[Click aquí para recargar la configuración.]]></entry>
+  <entry id="livestats.help.title"><![CDATA[Recargar la configuración:]]></entry>
+  <entry id="livestats.help.description"><![CDATA[Click aquí para recargar la configuración.]]></entry>
+
   <entry id="CONFIG.TITLE"><![CDATA[Configuración:]]></entry>
 
   <entry id="MAINCONFIG.TITLE"><![CDATA[Configuración global:]]></entry>
