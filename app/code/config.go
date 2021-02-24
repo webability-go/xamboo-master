@@ -6,11 +6,12 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/webability-go/xamboo"
 	"github.com/webability-go/xamboo/config"
 )
 
 func ReloadConfig() error {
-	return config.OverLoad(config.Config.File)
+	return xamboo.OverLoad()
 }
 
 func GetMainConfig() map[string]interface{} {
