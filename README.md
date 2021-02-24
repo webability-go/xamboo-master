@@ -25,6 +25,10 @@ TO DO
 Version Changes Control
 =======================
 
+V0.0.5 - 2021-02-24
+-----------------------
+- Bug corrected on new option to reload configuration in app.so
+
 V0.0.4 - 2021-02-21
 -----------------------
 - New option added to the menu to reload the configuration in the server
