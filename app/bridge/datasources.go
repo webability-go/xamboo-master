@@ -10,7 +10,7 @@ import (
 
 var Containers assets.ContainersList
 
-func LinkContexts(lib *plugin.Plugin) error {
+func LinkDatasources(lib *plugin.Plugin) error {
 
 	obj, err := lib.Lookup("Containers")
 	if err != nil {

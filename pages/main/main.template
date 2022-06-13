@@ -164,14 +164,14 @@ function(e)
                 </zone>
 
                 <zone type="control">
-                  <element id="submit" type="buttonElement" action="submit" extra="success">##submit##
+                  <element id="submit" type="buttonElement" action="submit" extra="success"><![CDATA[##submit##]]>
                     <help>
                       <summary>##submit.summary##</summary>
                       <title>##submit.help##</title>
                       <description>##submit.description##</description>
                     </help>
                   </element>
-                  <element id="reset" type="buttonElement" action="reset" extra="warning">##reset##
+                  <element id="reset" type="buttonElement" action="reset" extra="warning"><![CDATA[##reset##]]>
                     <help>
                       <summary>##reset.summary##</summary>
                       <title>##reset.help##</title>
@@ -539,7 +539,7 @@ function timer()
 
 function alerts(request)
 {
-  var data = JSONDecode(request.responseText);
+  var data = WA.JSON.decode(request.responseText);
   var strmsg = '';
   if (data.messages > 0)
     strmsg += data.messages + ' mensaje' + (data.messages>1?'s':'');

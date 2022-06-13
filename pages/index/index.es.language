@@ -94,29 +94,29 @@
   <entry id="engine.help.description"><![CDATA[Puedes hacer click en esta linea para visualizar el detalle de los datos del engine.]]></entry>
   <entry id="ENGINE.ADMIN"><![CDATA[Engine:]]></entry>
 
-  <entry id="CONTEXTS.TITLE"><![CDATA[Contextos]]></entry>
-  <entry id="contexts.help.summary"><![CDATA[Click aquí para abrir o cerrar la lista de contextos del sistema.]]></entry>
-  <entry id="contexts.help.title"><![CDATA[Contextos:]]></entry>
-  <entry id="contexts.help.description"><![CDATA[Esta lista permite visualizar todos los contextos del sistema.]]></entry>
-  <entry id="context.new.help.summary"><![CDATA[Click aquí para agregar un nuevo contexto.]]></entry>
-  <entry id="context.new.help.title"><![CDATA[Nuevo contexto:]]></entry>
-  <entry id="context.new.help.description"><![CDATA[Puedes hacer click en esta linea para agregar un nuevo contexto.]]></entry>
-  <entry id="CONTEXT.NEW"><![CDATA[Nuevo contexto:]]></entry>
+  <entry id="CONTEXTS.TITLE"><![CDATA[Fuentes de datos]]></entry>
+  <entry id="contexts.help.summary"><![CDATA[Click aquí para abrir o cerrar la lista de fuentes de datos del sistema.]]></entry>
+  <entry id="contexts.help.title"><![CDATA[Fuentes de datos:]]></entry>
+  <entry id="contexts.help.description"><![CDATA[Esta lista permite visualizar todas las fuentes de datos del sistema.]]></entry>
+  <entry id="context.new.help.summary"><![CDATA[Click aquí para agregar una nueva fuente de datos.]]></entry>
+  <entry id="context.new.help.title"><![CDATA[Nueva fuente de datos:]]></entry>
+  <entry id="context.new.help.description"><![CDATA[Puedes hacer click en esta linea para agregar una nueva fuente de datos.]]></entry>
+  <entry id="CONTEXT.NEW"><![CDATA[Nueva fuente de datos:]]></entry>
 
-  <entry id="context.help.summary"><![CDATA[Click aquí para administrar el contexto.]]></entry>
-  <entry id="context.help.title"><![CDATA[Contexto:]]></entry>
-  <entry id="context.help.description"><![CDATA[Esta lista permite administrar el contexto.]]></entry>
-  <entry id="CONTEXT.ADMIN"><![CDATA[Contexto:]]></entry>
+  <entry id="context.help.summary"><![CDATA[Click aquí para administrar la fuente de datos.]]></entry>
+  <entry id="context.help.title"><![CDATA[Fuente de datos:]]></entry>
+  <entry id="context.help.description"><![CDATA[Esta opción permite administrar la fuente de datos.]]></entry>
+  <entry id="CONTEXT.ADMIN"><![CDATA[Fuente de datos:]]></entry>
 
-  <entry id="CONTEXTCONTAINERS.TITLE"><![CDATA[Aplicaciones y Contenedores de contextos]]></entry>
-  <entry id="contextcontainers.help.summary"><![CDATA[Click aquí para abrir o cerrar la lista de contenedores de contextos del sistema.]]></entry>
-  <entry id="contextcontainers.help.title"><![CDATA[Contenedores de contextos:]]></entry>
-  <entry id="contextcontainers.help.description"><![CDATA[Esta lista permite visualizar todos los contenedores de contextos del sistema.]]></entry>
+  <entry id="CONTEXTCONTAINERS.TITLE"><![CDATA[Aplicaciones y colecciones de fuentes de datos]]></entry>
+  <entry id="contextcontainers.help.summary"><![CDATA[Click aquí para abrir o cerrar la lista de colecciones de fuentes de datos del sistema.]]></entry>
+  <entry id="contextcontainers.help.title"><![CDATA[Coleccion de fuentes de datos:]]></entry>
+  <entry id="contextcontainers.help.description"><![CDATA[Esta lista permite visualizar todas las colecciones de fuentes de datos del sistema.]]></entry>
 
-  <entry id="contextcontainer.help.summary"><![CDATA[Click aquí para administrar el contenedor de contextos.]]></entry>
-  <entry id="contextcontainer.help.title"><![CDATA[Contenedor de contextos:]]></entry>
-  <entry id="contextcontainer.help.description"><![CDATA[Click aquí para administrar el contenedor de contextos.]]></entry>
-  <entry id="CONTEXTCONTAINER.ADMIN"><![CDATA[Contenedor de contextos:]]></entry>
+  <entry id="contextcontainer.help.summary"><![CDATA[Click aquí para administrar la colección de fuentes de datos.]]></entry>
+  <entry id="contextcontainer.help.title"><![CDATA[Colección de fuentes de datos:]]></entry>
+  <entry id="contextcontainer.help.description"><![CDATA[Click aquí para administrar la colección de fuentes de datos.]]></entry>
+  <entry id="CONTEXTCONTAINER.ADMIN"><![CDATA[Colección de fuentes de datos:]]></entry>
 
   <entry id="MODULES.TITLE"><![CDATA[Módulos]]></entry>
   <entry id="modules.help.summary"><![CDATA[Click aquí para abrir o cerrar la lista de módulos del sistema.]]></entry>

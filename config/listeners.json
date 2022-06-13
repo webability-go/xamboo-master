@@ -1,0 +1,16 @@
+{
+  "listeners": [
+    {
+      "name": "https-master",
+      "ip": "",
+      "port": "83",
+      "protocol": "https",
+      "readtimeout": 120,
+      "writetimeout": 120,
+      "headersize": 65536,
+      "log": {
+        "sys": "file:./example/logs/listener-master-sys.log"
+      }
+    }
+  ]
+}
