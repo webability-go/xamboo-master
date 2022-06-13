@@ -8,39 +8,39 @@ import (
 	"github.com/webability-go/xamboo/cms/context"
 )
 
-// The context containers file is {resourcesdir}/containers.conf
-type Context struct {
+// The datasource containers file is {resourcesdir}/containers.conf
+type Datasource struct {
 	ID     string
 	Path   string
 	Config *xconfig.XConfig
 }
 
 type Container struct {
-	Name     string
-	Path     string
-	LogFile  string
-	Config   *xconfig.XConfig
-	Contexts []*Context
+	Name        string
+	Path        string
+	LogFile     string
+	Config      *xconfig.XConfig
+	Datasources []*Datasource
 }
 
 type ContainersList interface {
 	fmt.Stringer   // please implement String()
 	fmt.GoStringer // Please implement GoString()
 
-	Load(ctx *context.Context, id string, contextfile string)
+	Load(ctx *context.Context, id string, datasourcefile string)
 	UpsertContainer(containerid string, newid string, path string) *Container
-	UpsertContext(containerid string, contextid string, newid string, path string) *Context
+	UpsertDatasource(containerid string, datasourceid string, newid string, path string) *Datasource
 
 	GetContainersList() []*Container
 	GetContainer(containerid string) *Container
-	GetContext(containerid string, contextid string) *Context
+	GetDatasource(containerid string, datasourceid string) *Datasource
 
-	// save only the list of containers ~/resources/contextscontainers.conf
+	// save only the list of containers ~/resources/datasourcescontainers.conf
 	SaveContainers(ctx *context.Context)
 	// save only the container contexts config ~/config/contexts.conf
 	SaveContainer(ctx *context.Context, containerid string)
 	// save only the context config ~/config/ID.conf
-	SaveContext(ctx *context.Context, containerid string, contextid string)
+	SaveDatasource(ctx *context.Context, containerid string, datasourceid string)
 }
 
 func (c *Container) String() string {
@@ -53,12 +53,12 @@ func (c *Container) GoString() string {
 	return s
 }
 
-func (c *Context) String() string {
+func (c *Datasource) String() string {
 	s := "CONTEXT: " + fmt.Sprintf("%v\n", *c)
 	return s
 }
 
-func (c *Context) GoString() string {
+func (c *Datasource) GoString() string {
 	s := "#CONTEXT: " + fmt.Sprintf("%#v\n", *c)
 	return s
 }

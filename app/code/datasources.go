@@ -5,8 +5,9 @@ import (
 
 	"github.com/webability-go/xconfig"
 
-	"github.com/webability-go/xamboo/cms/context"
 	"master/app/assets"
+
+	"github.com/webability-go/xamboo/cms/context"
 )
 
 type TContainers []*assets.Container
@@ -24,12 +25,12 @@ func (c *TContainers) Load(ctx *context.Context, id string, configfile string) {
 		return
 	}
 
-	contexts, _ := datacontainer.Config.GetStringCollection("datasource")
-	for _, context := range contexts {
-		cfgpath, _ := datacontainer.Config.GetString(context + "+config")
-		datacontext := c.UpsertContext(id, context, context, cfgpath)
-		datacontext.Config = xconfig.New()
-		err := datacontext.Config.LoadFile(cfgpath)
+	datasources, _ := datacontainer.Config.GetStringCollection("datasource")
+	for _, datasource := range datasources {
+		cfgpath, _ := datacontainer.Config.GetString(datasource + "+config")
+		datadatasource := c.UpsertDatasource(id, datasource, datasource, cfgpath)
+		datadatasource.Config = xconfig.New()
+		err := datadatasource.Config.LoadFile(cfgpath)
 		if err != nil {
 			fmt.Println("Error:", err)
 			return
@@ -71,26 +72,26 @@ func (c *TContainers) UpsertContainer(containerid string, newid string, path str
 	return container
 }
 
-func (c *TContainers) UpsertContext(containerid string, contextid string, newid string, path string) *assets.Context {
+func (c *TContainers) UpsertDatasource(containerid string, datasourceid string, newid string, path string) *assets.Datasource {
 
 	ct := c.GetContainer(containerid)
 	if ct == nil {
 		return nil
 	}
 
-	ctx := c.GetContext(containerid, contextid)
+	ctx := c.GetDatasource(containerid, datasourceid)
 	if ctx != nil {
 		ctx.ID = newid
 		ctx.Path = path
 		return ctx
 	}
 
-	context := &assets.Context{
+	datasource := &assets.Datasource{
 		ID:   newid,
 		Path: path,
 	}
-	ct.Contexts = append(ct.Contexts, context)
-	return context
+	ct.Datasources = append(ct.Datasources, datasource)
+	return datasource
 }
 
 func (c *TContainers) GetContainersList() []*assets.Container {
@@ -112,15 +113,15 @@ func (c *TContainers) GetContainer(containerid string) *assets.Container {
 	return nil
 }
 
-func (c *TContainers) GetContext(containerid string, contextid string) *assets.Context {
+func (c *TContainers) GetDatasource(containerid string, datasourceid string) *assets.Datasource {
 
 	ct := c.GetContainer(containerid)
 	if ct == nil {
 		return nil
 	}
 
-	for _, x := range ct.Contexts {
-		if x.ID == contextid {
+	for _, x := range ct.Datasources {
+		if x.ID == datasourceid {
 			return x
 		}
 	}
@@ -142,22 +143,22 @@ func (c *TContainers) SaveContainer(ctx *context.Context, containerid string) {
 		}
 
 		container.Config.Set("logcore", container.LogFile)
-		container.Config.Del("context")
-		for _, ct := range container.Contexts {
-			container.Config.Add("context", ct.ID)
+		container.Config.Del("datasource")
+		for _, ct := range container.Datasources {
+			container.Config.Add("datasource", ct.ID)
 			container.Config.Set(ct.ID+"+config", ct.Path)
 		}
 		container.Config.SaveFile(path)
 	}
 }
 
-func (c *TContainers) SaveContext(ctx *context.Context, containerid string, contextid string) {
+func (c *TContainers) SaveDatasource(ctx *context.Context, containerid string, datasourceid string) {
 
-	context := c.GetContext(containerid, contextid)
-	if context != nil {
-		path := context.Path
-		if context.Config != nil {
-			context.Config.SaveFile(path)
+	datasource := c.GetDatasource(containerid, datasourceid)
+	if datasource != nil {
+		path := datasource.Path
+		if datasource.Config != nil {
+			datasource.Config.SaveFile(path)
 		}
 	}
 }

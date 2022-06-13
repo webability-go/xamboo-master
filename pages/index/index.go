@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/webability-go/xcore/v2"
@@ -55,10 +56,10 @@ func Menu(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLang
 			return getHosts(ctx, s.(*cms.CMS), language)
 		case "engines":
 			return getEngines(ctx, s.(*cms.CMS), language)
-		case "contexts":
-			return getContexts(ctx, s.(*cms.CMS), language)
-		case "contextcontainers":
-			return getContextContainers(ctx, s.(*cms.CMS), language)
+		case "datasources":
+			return getDatasources(ctx, s.(*cms.CMS), language)
+		case "datacourcecontainers":
+			return getDatasourceContainers(ctx, s.(*cms.CMS), language)
 		case "modules":
 			return getModules(ctx, s.(*cms.CMS), language)
 		default:
@@ -186,8 +187,8 @@ func getMenu(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[st
 
 	// 3. Contexts
 	optr = map[string]interface{}{
-		"id":        "contexts",
-		"template":  "contexts",
+		"id":        "datasources",
+		"template":  "datasources",
 		"loadable":  true,
 		"loaded":    false,
 		"closeable": true,
@@ -197,8 +198,8 @@ func getMenu(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[st
 
 	// 4. Contexts containers
 	optr = map[string]interface{}{
-		"id":        "contextcontainers",
-		"template":  "contextcontainers",
+		"id":        "datasourcecontainers",
+		"template":  "datasourcecontainers",
 		"loadable":  true,
 		"loaded":    false,
 		"closeable": true,
@@ -571,47 +572,27 @@ type ct struct {
 	ID  string
 }
 
-func getContexts(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
+func getDatasources(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
 
 	rows := []interface{}{}
 
-	config := s.GetFullConfig()
-
-	contextslist := map[string]ct{}
-	// TODO(phil) Add stats fo # used in applications
-
-	for _, h := range config.Hosts {
-		for _, plg := range h.Plugins {
-
-			lib := applications.GetApplication(plg.Id)
-			configfile := lib.GetDatasourcesConfigFile()
-			bridge.Containers.Load(ctx, h.Name+"_"+plg.Name, configfile)
-			container := bridge.Containers.GetContainer(h.Name + "_" + plg.Name)
-			contexts := container.Contexts
-			ptr := fmt.Sprintf("%p", lib)
-
-			for _, context := range contexts {
-				contextslist[ptr+"/"+context.ID] = ct{
-					Ptr: ptr,
-					ID:  context.ID,
-				}
+	for cntid, ct := range *base.Containers {
+		dss := ct.GetDatasources()
+		for dtsid := range dss {
+			opt := map[string]interface{}{
+				"id":        "ds-" + cntid + "-" + dtsid,
+				"cntid":     cntid,
+				"dtsid":     dtsid,
+				"template":  "datasource",
+				"name":      cntid + "::" + dtsid,
+				"father":    "datasources",
+				"loadable":  true,
+				"loaded":    false,
+				"closeable": true,
+				"closed":    true,
 			}
+			rows = append(rows, opt)
 		}
-	}
-
-	for ctxid, ct := range contextslist {
-		opt := map[string]interface{}{
-			"id":        "ctx-" + ctxid,
-			"ctxid":     ctxid,
-			"template":  "context",
-			"name":      ct.ID + " [" + ct.Ptr + "]",
-			"father":    "contexts",
-			"loadable":  true,
-			"loaded":    false,
-			"closeable": true,
-			"closed":    true,
-		}
-		rows = append(rows, opt)
 	}
 
 	return map[string]interface{}{
@@ -626,7 +607,7 @@ type cc struct {
 	ConfigFile string
 }
 
-func getContextContainers(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
+func getDatasourceContainers(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
 
 	rows := []interface{}{}
 
@@ -653,9 +634,9 @@ func getContextContainers(ctx *context.Context, s *cms.CMS, language *xcore.XLan
 	for _, cc := range contextcontainerslist {
 		opt := map[string]interface{}{
 			"id":        "ctxcnt-" + cc.Ptr,
-			"template":  "contextcontainer",
+			"template":  "datasourcecontainer",
 			"name":      cc.ID + " [" + cc.Ptr + "] " + cc.ConfigFile,
-			"father":    "contextcontainers",
+			"father":    "datasourcecontainers",
 			"loadable":  false,
 			"closeable": false,
 		}
@@ -675,6 +656,7 @@ func getModules(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map
 	config := s.GetFullConfig()
 
 	modules := map[string]applications.Module{}
+	keys := []string{}
 
 	// Carga los APPs Libraries de cada Host config
 	for _, h := range config.Hosts {
@@ -693,14 +675,19 @@ func getModules(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map
 		}
 	}
 
-	for _, mod := range modules {
+	for k := range modules {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for _, mod := range keys {
 
 		opt := map[string]interface{}{
-			"id":        "mod-" + mod.GetID(),
-			"modid":     mod.GetID(),
+			"id":        "mod-" + modules[mod].GetID(),
+			"modid":     modules[mod].GetID(),
 			"template":  "module",
 			"icon":      "module.png",
-			"name":      mod.GetID() + " " + mod.GetVersion(),
+			"name":      modules[mod].GetID() + " " + modules[mod].GetVersion(),
 			"father":    "modules",
 			"loadable":  false,
 			"closeable": false,
@@ -750,7 +737,7 @@ func getModulesOfContainer(ctx *context.Context, s *cms.CMS, language *xcore.XLa
 
 			bridge.Containers.Load(ctx, h.Name+"_"+plg.Name, configfile)
 			container := bridge.Containers.GetContainer(h.Name + "_" + plg.Name)
-			contexts := container.Contexts
+			contexts := container.Datasources
 
 			for _, context := range contexts {
 
@@ -766,7 +753,6 @@ func getModulesOfContainer(ctx *context.Context, s *cms.CMS, language *xcore.XLa
 				if len(authorizedmodules) == 0 && len(*compiledmodules) == 0 {
 					continue // nothing to show
 				}
-				fmt.Println(cnt, context.ID, authorizedmodules)
 
 				for _, authmod := range authorizedmodules {
 					xauthmod := strings.Split(authmod, "|")

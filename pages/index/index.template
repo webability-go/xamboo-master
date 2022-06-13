@@ -398,8 +398,8 @@ function(e)
           </element>
         </template>
 
-        <!-- contexts -->
-        <template name="contexts">
+        <!-- datasources -->
+        <template name="datasources">
           <element type="imageElement" classname="imagemenu" width="16" height="16" src="/skins/master/icons/contexts.png"></element>
           <element type="textElement" classname="textmenulink"><![CDATA[##CONTEXTS.TITLE##]]>
             <help>
@@ -440,8 +440,8 @@ function(e)
           </element>
         </template>
 
-        <!-- Contexts: Context -->
-        <template name="context">
+        <!-- Contexts: datasource -->
+        <template name="datasource">
           <element type="imageElement" classname="imagemenu" width="16" height="16" src="/skins/master/icons/context.png"></element>
           <element type="textElement" classname="textmenulink"><![CDATA[{name}]]>
             <help>
@@ -466,8 +466,8 @@ function(e)
           </element>
         </template>
 
-        <!-- contexts containers -->
-        <template name="contextcontainers">
+        <!-- datasources containers -->
+        <template name="datasourcecontainers">
           <element type="imageElement" classname="imagemenu" width="16" height="16" src="/skins/master/icons/contextcontainers.png"></element>
           <element type="textElement" classname="textmenulink"><![CDATA[##CONTEXTCONTAINERS.TITLE##]]>
             <help>
@@ -488,7 +488,7 @@ function(e)
         </template>
 
         <!-- Context containers: Context container -->
-        <template name="contextcontainer">
+        <template name="datasourcecontainer">
           <element type="imageElement" classname="imagemenu" width="16" height="16" src="/skins/master/icons/contextcontainer.png"></element>
           <element type="textElement" classname="textmenulink"><![CDATA[{name}]]>
             <help>

@@ -5,7 +5,6 @@ The full manual is on xamboo github:
 
 https://github.com/webability-go/xamboo
 
-
 Xamboo-Master is a system plugin for the Xamboo system to administrate the application with a web interface
 for the xamboo configuration and maintenance, and xmodules installation.
 
@@ -24,6 +23,22 @@ TO DO
 
 Version Changes Control
 =======================
+
+V0.1.0 - 2022-06-09
+-----------------------
+- Made compatible with Xamboo 1.6
+. Nade compatible with xmodules/base 2022-06-09
+- removed bridge support (not anymore needed)
+
+V0.0.7 - 2021-04-22
+-----------------------
+- Changes to meet the new xmodules structure: remove the bridge, use directly the functions into the application.
+- Enhance the administration pages with a better display and representation of objects into the system.
+
+V0.0.6 - 2021-03-09
+-----------------------
+- HostWriter requeststat parameter changed to lowers (the official parameter from the Component is in lowercase)
+
 
 V0.0.5 - 2021-02-24
 -----------------------

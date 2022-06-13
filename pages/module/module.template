@@ -11,39 +11,55 @@
         </zone>
       </container>
     </zone>
+    <zone size="120">
+      <element id="moduledataform" type="htmlElement" style="padding: 20px; ">
+<![CDATA[{{moduledata}}]]>
+      </element>
+    </zone>
     <zone size="*">
       <element type="htmlElement"><![CDATA[
 <center>
 {{DATA}}
 </center>
-
-<div id=""
-
       ]]></element>
-      <element id="result" type="htmlElement"></element>
+      <element id="result" type="htmlElement" style="padding: 20px; "></element>
     </zone>
   </container>
 
   <element type="codeElement"><![CDATA[
 
-function install( app, context, module, prefix)
+function module_install(module, container, datasource, prefix, idpath)
 {
-  WA.Managers.ajax.createRequest("/module/install/json", "POST", "app="+app+"&context="+context+"&module="+module+"&prefix="+prefix, function(response) { WA.toDOM('module|'+module+'|result').innerHTML = response.responseText; }, true)
+  WA.Managers.ajax.createRequest("/module/install/json", "POST", "module="+module+"&container="+container+"&datasource="+datasource+"&prefix="+prefix+"&idpath="+idpath, function(response) { module_printresult(module, response.responseText); }, true)
 }
 
-function upgrade( app, context, module, prefix)
+function module_upgrade(module, container, datasource, prefix, idpath)
 {
-  WA.Managers.ajax.createRequest("/module/install/json", "POST", "app="+app+"&context="+context+"&module="+module+"&prefix="+prefix, function(response) { WA.toDOM('module|'+module+'|result').innerHTML = response.responseText; }, true)
+  console.log("module:", module)
+  WA.Managers.ajax.createRequest("/module/install/json", "POST", "module="+module+"&container="+container+"&datasource="+datasource+"&prefix="+prefix+"&idpath="+idpath, function(response) { module_printresult(module, response.responseText); }, true)
 }
 
-function reinstall( app, context, module, prefix)
+function module_reinstall(module, container, datasource, prefix, idpath)
 {
-  WA.Managers.ajax.createRequest("/module/install/json", "POST", "app="+app+"&context="+context+"&module="+module+"&prefix="+prefix, function(response) { WA.toDOM('module|'+module+'|result').innerHTML = response.responseText; }, true)
+  WA.Managers.ajax.createRequest("/module/install/json", "POST", "module="+module+"&container="+container+"&datasource="+datasource+"&prefix="+prefix+"&idpath="+idpath, function(response) { module_printresult(module, response.responseText); }, true)
 }
 
-function uninstall( app, context, module, prefix)
+function module_uninstall(module, container, datasource, prefix, idpath)
 {
-  WA.Managers.ajax.createRequest("/module/uninstall/json", "POST", "app="+app+"&context="+context+"&module="+module+"&prefix="+prefix, function(response) { WA.toDOM('module|'+module+'|result').innerHTML = response.responseText; }, true)
+  WA.Managers.ajax.createRequest("/module/uninstall/json", "POST", "module="+module+"&container="+container+"&datasource="+datasource+"&prefix="+prefix+"&idpath="+idpath, function(response) { module_printresult(module, response.responseText); }, true)
+}
+
+function module_printresult(module, rt)
+{
+  var code = WA.JSON.decode(rt);
+  console.log(module, code)
+  text = '<b>Result:</b><br />';
+  for (var i = 0; i < code.result.length; i++)
+  {
+    text += code.result[i] + "<br />";
+  }
+
+  WA.toDOM('module|'+module+'|result').innerHTML = text;
 }
 
 ]]></element>

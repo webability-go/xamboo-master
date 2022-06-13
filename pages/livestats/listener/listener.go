@@ -37,7 +37,7 @@ func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLangu
 	// Note: the upgrader will hijack the writer, so we are responsible to actualize the stats
 	hw := ctx.Writer.(host.HostWriter)
 	par := hw.GetParams()
-	irs, _ := par.Get("RequestStat")
+	irs, _ := par.Get("requeststat")
 	rs := irs.(*stat.RequestStat)
 	ls := listenerStream{
 		Id:          counter,
