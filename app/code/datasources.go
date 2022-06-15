@@ -5,7 +5,7 @@ import (
 
 	"github.com/webability-go/xconfig"
 
-	"master/app/assets"
+	"masterapp/assets"
 
 	"github.com/webability-go/xamboo/cms/context"
 )

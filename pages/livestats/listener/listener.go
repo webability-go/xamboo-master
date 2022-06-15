@@ -14,9 +14,9 @@ import (
 	"github.com/webability-go/xamboo/cms/context"
 	"github.com/webability-go/xamboo/components/host"
 	"github.com/webability-go/xamboo/components/stat"
-	"github.com/webability-go/xcore/v2"
+	xcore "github.com/webability-go/xcore/v2"
 
-	"master/app/security"
+	"masterapp/security"
 )
 
 type listenerStream struct {

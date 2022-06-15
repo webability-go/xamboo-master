@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 
-	"github.com/webability-go/xcore/v2"
+	xcore "github.com/webability-go/xcore/v2"
 
 	"github.com/webability-go/xamboo/cms/context"
 
-	"master/app/code"
-	"master/app/security"
+	"masterapp/code"
+	"masterapp/security"
 )
 
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {

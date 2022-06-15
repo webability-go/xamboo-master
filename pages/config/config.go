@@ -6,14 +6,14 @@ import (
 	"encoding/xml"
 	"errors"
 
-	"github.com/webability-go/xcore/v2"
+	xcore "github.com/webability-go/xcore/v2"
 	"github.com/webability-go/xdominion"
 	"github.com/webability-go/xdommask"
 
 	"github.com/webability-go/xamboo/cms/context"
 
-	"master/app/code"
-	"master/app/security"
+	"masterapp/code"
+	"masterapp/security"
 )
 
 var language *xcore.XLanguage
