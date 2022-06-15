@@ -9,12 +9,14 @@ import (
 
 	"github.com/webability-go/xamboo/cms"
 	"github.com/webability-go/xamboo/cms/context"
-	"github.com/webability-go/xamboo/master/app/bridge"
+
+	"master/app/code"
+	"master/app/security"
 )
 
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
-	ok := bridge.Setup(ctx, bridge.USER)
+	ok := security.Verify(ctx, security.USER)
 	if !ok {
 		return ""
 	}
@@ -39,8 +41,8 @@ func searchLog(s *cms.CMS, ctx *assets.Context, host string, app string) string 
 				GetContextConfigFile := ccf.(func() string)
 				configfile := GetContextConfigFile()
 
-				bridge.Containers.Load(ctx, host+"_"+app, configfile)
-				container := bridge.Containers.GetContainer(host + "_" + app)
+				code.Containers.Load(ctx, host+"_"+app, configfile)
+				container := code.Containers.GetContainer(host + "_" + app)
 
 				if container.Config == nil {
 					return ""
@@ -155,7 +157,7 @@ func getMask(ctx *context.Context, s *cms.CMS) *xdommask.Mask {
 
 func Formcontainer(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
-	ok := bridge.Setup(ctx, bridge.USER)
+	ok := security.Verify(ctx, security.USER)
 	if !ok {
 		return ""
 	}
@@ -192,9 +194,9 @@ func Formcontainer(ctx *context.Context, template *xcore.XTemplate, language *xc
 			// build container and write container
 			// be sure we load the containers
 			searchLog(s.(*cms.CMS), ctx, host, app)
-			container := bridge.Containers.GetContainer(host + "_" + app)
+			container := code.Containers.GetContainer(host + "_" + app)
 			container.LogFile = path
-			bridge.Containers.SaveContainer(ctx, host+"_"+app)
+			code.Containers.SaveContainer(ctx, host+"_"+app)
 
 			messages["text"] = language.Get("success")
 		} else {

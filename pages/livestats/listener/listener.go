@@ -15,6 +15,8 @@ import (
 	"github.com/webability-go/xamboo/components/host"
 	"github.com/webability-go/xamboo/components/stat"
 	"github.com/webability-go/xcore/v2"
+
+	"master/app/security"
 )
 
 type listenerStream struct {
@@ -32,6 +34,11 @@ var counter = 1
    The enginecontext contains all what you need to link with the system
 */
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
+
+	ok := security.Verify(ctx, security.USER)
+	if !ok {
+		return ""
+	}
 
 	fmt.Println("Entering listener")
 	// Note: the upgrader will hijack the writer, so we are responsible to actualize the stats

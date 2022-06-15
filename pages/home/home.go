@@ -4,12 +4,14 @@ import (
 	"github.com/webability-go/xamboo/cms"
 	"github.com/webability-go/xamboo/cms/context"
 	"github.com/webability-go/xcore/v2"
+
+	"master/app/security"
 )
 
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
 	// If config is not already done, call install
-	installed, _ := ctx.Sysparams.GetBool("installed")
+	installed := security.IsInstalled(ctx)
 	if !installed {
 		return s.(*cms.CMS).Run("home/install", true, nil, "", "", "")
 	}

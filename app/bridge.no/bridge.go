@@ -10,15 +10,6 @@ import (
 /* This package declare all the available functions of the app to be able to call them. */
 /* Include this package when you want to call the app */
 
-const (
-	// Must be NOT installed or error
-	NOTINSTALLED = 1
-	// Must be INSTALLED, DOES NOT MATTER IF THE USER IS OR NOT CONNECTED
-	ANY = 2
-	// Must be INSTALLED and THE USER MUST BE CONNECTED TO USE THE BRIDGE
-	USER = 3
-)
-
 // Setup fabrica el enlace bridge-modulo SO listo para usar. Verifica luego enlace de funciones, verifica login clientes y usuarios, verifica idionas y deviles.
 // Es la primera funcion que hay que llamar cuando se usa el bridge
 func Setup(ctx *context.Context, connection int) bool {

@@ -6,12 +6,14 @@ import (
 	"github.com/webability-go/xcore/v2"
 
 	"github.com/webability-go/xamboo/cms/context"
-	"master/app/bridge"
+
+	"master/app/code"
+	"master/app/security"
 )
 
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
-	ok := bridge.Setup(ctx, bridge.USER)
+	ok := security.Verify(ctx, security.USER)
 	if !ok {
 		return ""
 	}
@@ -29,7 +31,7 @@ func getData(ctx *context.Context, language *xcore.XLanguage) string {
 
 	resourcesdir, _ := ctx.Sysparams.GetString("resourcesdir")
 
-	cfg := bridge.GetMainConfig()
+	cfg := code.GetMainConfig()
 	/*
 		fmt.Println("DATA:", data)
 
