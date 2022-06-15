@@ -6,12 +6,12 @@ import (
 	"github.com/webability-go/xamboo/cms/context"
 	"github.com/webability-go/xamboo/config"
 
-	"master/app/bridge"
+	"master/app/security"
 )
 
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
-	ok := bridge.Setup(ctx, bridge.ANY)
+	ok := security.Verify(ctx, security.ANY)
 	if !ok {
 		return ""
 	}
@@ -40,7 +40,7 @@ func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLangu
 
 func Formlogin(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
-	ok := bridge.Setup(ctx, bridge.ANY)
+	ok := security.Verify(ctx, security.ANY)
 	if !ok {
 		return ""
 	}
@@ -71,7 +71,7 @@ func Formlogin(ctx *context.Context, template *xcore.XTemplate, language *xcore.
 
 func Formpassword(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
-	ok := bridge.Setup(ctx, bridge.ANY)
+	ok := security.Verify(ctx, security.ANY)
 	if !ok {
 		return ""
 	}
@@ -84,7 +84,7 @@ func Formpassword(ctx *context.Context, template *xcore.XTemplate, language *xco
 
 func Disconnect(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
-	ok := bridge.Setup(ctx, bridge.ANY)
+	ok := security.Verify(ctx, security.ANY)
 	if !ok {
 		return ""
 	}

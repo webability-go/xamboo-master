@@ -23,6 +23,8 @@ var (
 )
 
 func init() {
+	// Have to use the system language or english by default
+	// YOu may change default language of the system (know languages: English, Spanish, French)
 	tools.Language = language.Spanish
 }
 
@@ -32,7 +34,7 @@ func (la *LocalApp) StartHost(h config.Host) {
 }
 
 func (la *LocalApp) StartContext(ctx *context.Context) {
-	code.VerifyLogin(ctx)
+	code.VerifySession(ctx)
 }
 
 func (la *LocalApp) GetDatasourcesConfigFile() string {
@@ -47,16 +49,8 @@ func (la *LocalApp) GetCompiledModules() applications.ModuleSet {
 	return base.ModulesList
 }
 
-func VerifyLogin(ctx *context.Context) {
-	code.VerifyLogin(ctx)
-}
-
-func GetMD5Hash(text string) string {
-	return code.GetMD5Hash(text)
-}
-
-func CreateKey(length int, chartype int) string {
-	return code.CreateKey(length, chartype)
+func VerifySession(ctx *context.Context) {
+	code.VerifySession(ctx)
 }
 
 func ReloadConfig() error {
@@ -65,4 +59,8 @@ func ReloadConfig() error {
 
 func GetMainConfig() map[string]interface{} {
 	return code.GetMainConfig()
+}
+
+func GenerateConfig(ctx *context.Context, L string, C string, serial string, username string, password string, email string) {
+	code.GenerateConfig(ctx, L, C, serial, username, password, email)
 }

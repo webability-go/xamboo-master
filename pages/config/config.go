@@ -4,41 +4,64 @@ import (
 	// "fmt"
 	//	"strings"
 	"encoding/xml"
+	"errors"
 
 	"github.com/webability-go/xcore/v2"
+	"github.com/webability-go/xdominion"
 	"github.com/webability-go/xdommask"
 
 	"github.com/webability-go/xamboo/cms/context"
 
-	"master/app/bridge"
+	"master/app/code"
+	"master/app/security"
 )
 
-func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
+var language *xcore.XLanguage
 
-	ok := bridge.Setup(ctx, bridge.USER)
+func Run(ctx *context.Context, template *xcore.XTemplate, xlanguage *xcore.XLanguage, s interface{}) interface{} {
+
+	if language == nil {
+		language = xlanguage
+	}
+
+	ok := security.Verify(ctx, security.USER)
 	if !ok {
 		return ""
 	}
 
-	L := ctx.Request.Form.Get("LANGUAGE")
-	C := ctx.Request.Form.Get("COUNTRY")
-
-	mask := getMask(L, C).Compile()
-	xmlmask, _ := xml.Marshal(mask)
+	mode := ctx.Request.Form.Get("mode")
+	if mode == "" {
+		mode = "4"
+	}
 
 	//	bridge.EntityLog_LogStat(ctx)
 	params := &xcore.XDataset{
-		"FORM": string(xmlmask),
-		"#":    language,
+		"FORM": createXMLMask("formconfig", mode, ctx),
+		"#":    xlanguage,
 	}
 
 	return template.Execute(params)
 }
 
-func getMask(lang string, country string) *xdommask.Mask {
+func createMask(id string, ctx *context.Context) (*xdommask.Mask, error) {
 
-	mask := xdommask.NewMask("formconfig")
-	mask.Mode = xdommask.VIEW
+	hooks := xdommask.MaskHooks{
+		Build:     build,
+		GetRecord: getrecord,
+		Update:    update,
+	}
+	return xdommask.NewMask(id, hooks, ctx)
+}
+
+func createXMLMask(id string, mode string, ctx *context.Context) string {
+	mask, _ := createMask(id, ctx)
+	cmask := mask.Compile(mode, ctx)
+	xmlmask, _ := xml.Marshal(cmask)
+	return string(xmlmask)
+}
+
+func build(mask *xdommask.Mask, ctx *context.Context) error {
+
 	mask.AuthModes = xdommask.UPDATE | xdommask.VIEW
 	mask.Key = "main"
 
@@ -85,7 +108,7 @@ func getMask(lang string, country string) *xdommask.Mask {
 	mask.AddField(f13)
 
 	// password
-	f12 := xdommask.NewPWField("password")
+	f12 := xdommask.NewMaskedField("password")
 	f12.Title = "##password.title##"
 	f12.HelpDescription = "##password.help.description##"
 	f12.NotNullModes = xdommask.UPDATE
@@ -171,31 +194,40 @@ func getMask(lang string, country string) *xdommask.Mask {
 	f9.TitleUpdate = "##form.reset##"
 	mask.AddField(f9)
 
-	return mask
+	return nil
 }
 
 func Formconfig(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
-	ok := bridge.Setup(ctx, bridge.USER)
+	ok := security.Verify(ctx, security.USER)
 	if !ok {
 		return ""
 	}
 
-	order := ctx.Request.Form.Get("Order")
-	if order == "getrecord" {
+	mask, _ := createMask("formconfig", ctx)
+	data, _ := mask.Run(ctx)
+	return data
+}
 
-		data := map[string]string{}
-		data["serial"], _ = ctx.Sysparams.GetString("serial")
-		data["username"], _ = ctx.Sysparams.GetString("username")
-		data["email"], _ = ctx.Sysparams.GetString("email")
-		data["language"], _ = ctx.Sysparams.GetString("language")
-		data["country"], _ = ctx.Sysparams.GetString("country")
+func getrecord(mask *xdommask.Mask, ctx *context.Context, key interface{}, mode int) (string, *xdominion.XRecord, error) {
 
-		edata := map[string]interface{}{}
-		edata["main"] = data
+	data := &xdominion.XRecord{}
+	data.Set("key", "main")
+	serial, _ := ctx.Sysparams.GetString("serial")
+	data.Set("serial", serial)
+	un, _ := ctx.Sysparams.GetString("username")
+	data.Set("username", un)
+	mail, _ := ctx.Sysparams.GetString("email")
+	data.Set("email", mail)
+	lang, _ := ctx.Sysparams.GetString("language")
+	data.Set("language", lang)
+	country, _ := ctx.Sysparams.GetString("country")
+	data.Set("country", country)
 
-		return edata
-	}
+	return "main", data, nil
+}
+
+func update(m *xdommask.Mask, ctx *context.Context, key interface{}, newrec *xdominion.XRecord) error {
 
 	serial := ctx.Request.Form.Get("serial")
 	username := ctx.Request.Form.Get("username")
@@ -222,13 +254,8 @@ func Formconfig(ctx *context.Context, template *xcore.XTemplate, language *xcore
 	// TODO(phil) verify language and country are authorized, password is strong enough
 
 	if success {
-		bridge.GenerateConfig(ctx, L, C, serial, username, password, email)
-		messages["text"] = language.Get("success")
-	} else {
-		messages["text"] = messagetext
+		code.GenerateConfig(ctx, L, C, serial, username, password, email)
+		return nil
 	}
-
-	return map[string]interface{}{
-		"success": success, "messages": messages, "popup": false,
-	}
+	return errors.New(messagetext)
 }

@@ -8,38 +8,54 @@ import (
 
 	"github.com/webability-go/xamboo/cms/context"
 
-	"master/app/bridge"
+	"master/app/code"
+	"master/app/security"
 )
+
+var language *xcore.XLanguage
 
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
-	ok := bridge.Setup(ctx, bridge.NOTINSTALLED)
+	ok := security.Verify(ctx, security.NOTINSTALLED)
 	if !ok {
 		return ""
 	}
 
-	// PAGE depends on COUNTRY variable (if already selected) or not
-	L := ctx.Request.Form.Get("LANGUAGE")
-	C := ctx.Request.Form.Get("COUNTRY")
-	// verify validity of L,C
-	// TODO(phil)
+	mode := ctx.Request.Form.Get("mode")
+	if mode == "" {
+		mode = "1"
+	}
 
-	mask := getMask(L, C).Compile()
-	xmlmask, _ := xml.Marshal(mask)
 	params := &xcore.XDataset{
-		"FORM": string(xmlmask),
+		"FORM": createXMLMask("formaccount", mode, ctx),
 		"#":    language,
 	}
 	return template.Execute(params)
 }
 
-func getMask(lang string, country string) *xdommask.Mask {
+func createMask(id string, ctx *context.Context) (*xdommask.Mask, error) {
 
-	mask := xdommask.NewMask("formaccount")
-	mask.Mode = xdommask.INSERT
+	hooks := xdommask.MaskHooks{
+		Build: build,
+	}
+	return xdommask.NewMask(id, hooks, ctx)
+}
+
+func createXMLMask(id string, mode string, ctx *context.Context) string {
+	mask, _ := createMask(id, ctx)
+	cmask := mask.Compile(mode, ctx)
+	xmlmask, _ := xml.Marshal(cmask)
+	return string(xmlmask)
+}
+
+func build(mask *xdommask.Mask, ctx *context.Context) error {
+
+	L := ctx.Request.Form.Get("LANGUAGE")
+	C := ctx.Request.Form.Get("COUNTRY")
+
 	mask.AuthModes = xdommask.INSERT | xdommask.VIEW
-	mask.Variables["COUNTRY"] = country
-	mask.Variables["LANGUAGE"] = lang
+	mask.Variables["COUNTRY"] = C
+	mask.Variables["LANGUAGE"] = L
 
 	mask.AlertMessage = "##mask.errormessage##"
 	mask.ServerMessage = "##mask.servermessage##"
@@ -94,7 +110,7 @@ WA.toDOM('install|single|step3').className = 'installstepactual';
 	mask.AddField(f4)
 
 	// password
-	f5 := xdommask.NewPWField("password")
+	f5 := xdommask.NewMaskedField("password")
 	f5.Title = "##password.title##"
 	f5.HelpDescription = "##password.help.description##"
 	f5.NotNullModes = xdommask.INSERT
@@ -135,12 +151,12 @@ WA.toDOM('install|single|step3').className = 'installstepactual';
 	f8.TitleInsert = "##form.reset##"
 	mask.AddField(f8)
 
-	return mask
+	return nil
 }
 
 func Formaccount(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
-	ok := bridge.Setup(ctx, bridge.NOTINSTALLED)
+	ok := security.Verify(ctx, security.NOTINSTALLED)
 	if !ok {
 		return ""
 	}
@@ -175,10 +191,9 @@ func Formaccount(ctx *context.Context, template *xcore.XTemplate, language *xcor
 	if success {
 		// write config file
 		// simulate load of config file into Engine.Host.Config till next system restart
-		bridge.GenerateConfig(ctx, L, C, serial, username, password, email)
+		code.GenerateConfig(ctx, L, C, serial, username, password, email)
 		messages["text"] = language.Get("success")
 	} else {
-
 		messages["text"] = messagetext
 	}
 

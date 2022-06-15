@@ -11,13 +11,14 @@ import (
 	"github.com/webability-go/xamboo/cms"
 	"github.com/webability-go/xamboo/cms/context"
 
-	cassets "master/app/assets"
-	"master/app/bridge"
+	"master/app/assets"
+	"master/app/code"
+	"master/app/security"
 )
 
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
-	ok := bridge.Setup(ctx, bridge.USER)
+	ok := security.Verify(ctx, security.USER)
 	if !ok {
 		return ""
 	}
@@ -31,7 +32,7 @@ func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLangu
 	return template.Execute(params)
 }
 
-func searchContext(s *cms.CMS, ctx *context.Context, host string, app string, contextid string) *cassets.Context {
+func searchContext(s *cms.CMS, ctx *context.Context, host string, app string, contextid string) *assets.Context {
 	config := s.GetFullConfig()
 
 	// Carga los APPs Libraries de cada Host config
@@ -41,8 +42,8 @@ func searchContext(s *cms.CMS, ctx *context.Context, host string, app string, co
 				ccf, _ := lib.Lookup("GetContextConfigFile")
 				GetContextConfigFile := ccf.(func() string)
 				configfile := GetContextConfigFile()
-				bridge.Containers.Load(ctx, host+"_"+app, configfile)
-				container := bridge.Containers.GetContext(host+"_"+app, contextid)
+				code.Containers.Load(ctx, host+"_"+app, configfile)
+				container := code.Containers.GetContext(host+"_"+app, contextid)
 				return container
 			}
 		}
@@ -365,7 +366,7 @@ func getMask(ctx *context.Context, s *cms.CMS) *xdommask.Mask {
 
 func Formcontext(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
-	ok := bridge.Setup(ctx, bridge.USER)
+	ok := security.Verify(ctx, security.USER)
 	if !ok {
 		return ""
 	}
@@ -408,8 +409,8 @@ func Formcontext(ctx *context.Context, template *xcore.XTemplate, language *xcor
 			// write config file
 			// Load context to load all config
 			searchContext(s.(*xamboo.Server), ctx, host, app, key)
-			localcontext := bridge.Containers.UpsertContext(host+"_"+app, key, name, path)
-			bridge.Containers.SaveContainer(ctx, host+"_"+app)
+			localcontext := code.Containers.UpsertContext(host+"_"+app, key, name, path)
+			code.Containers.SaveContainer(ctx, host+"_"+app)
 
 			// All the parameters of context config file
 			// adds/modify params
@@ -417,7 +418,7 @@ func Formcontext(ctx *context.Context, template *xcore.XTemplate, language *xcor
 				localcontext.Config = xconfig.New()
 			}
 
-			bridge.Containers.SaveContext(ctx, host+"_"+app, name)
+			code.Containers.SaveContext(ctx, host+"_"+app, name)
 
 			messages["text"] = language.Get("success")
 		} else {

@@ -13,12 +13,13 @@ import (
 
 	"github.com/webability-go/xmodules/base"
 
-	"master/app/bridge"
+	"master/app/code"
+	"master/app/security"
 )
 
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
-	ok := bridge.Setup(ctx, bridge.USER)
+	ok := security.Verify(ctx, security.USER)
 	if !ok {
 		return ""
 	}
@@ -33,7 +34,7 @@ func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLangu
 
 func Menu(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
-	ok := bridge.Setup(ctx, bridge.USER)
+	ok := security.Verify(ctx, security.USER)
 	if !ok {
 		return ""
 	}
@@ -416,7 +417,7 @@ func getFiles(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[s
 
 	rows := []interface{}{}
 
-	cfg := bridge.GetMainConfig()
+	cfg := code.GetMainConfig()
 	ifiles := cfg["include"]
 
 	for _, file := range ifiles.([]interface{}) {
@@ -735,8 +736,8 @@ func getModulesOfContainer(ctx *context.Context, s *cms.CMS, language *xcore.XLa
 			icompiledmodules := lib.GetCompiledModules()
 			compiledmodules := icompiledmodules.(*base.Modules)
 
-			bridge.Containers.Load(ctx, h.Name+"_"+plg.Name, configfile)
-			container := bridge.Containers.GetContainer(h.Name + "_" + plg.Name)
+			code.Containers.Load(ctx, h.Name+"_"+plg.Name, configfile)
+			container := code.Containers.GetContainer(h.Name + "_" + plg.Name)
 			contexts := container.Datasources
 
 			for _, context := range contexts {
@@ -856,12 +857,12 @@ func getModulesOfContainer(ctx *context.Context, s *cms.CMS, language *xcore.XLa
 
 func Reloadconfig(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
-	ok := bridge.Setup(ctx, bridge.USER)
+	ok := security.Verify(ctx, security.USER)
 	if !ok {
 		return ""
 	}
 
-	bridge.ReloadConfig()
+	code.ReloadConfig()
 
 	return "OK"
 }

@@ -11,12 +11,12 @@ import (
 	"github.com/webability-go/xamboo/cms/context"
 	"github.com/webability-go/xmodules/base"
 
-	"master/app/bridge"
+	"master/app/security"
 )
 
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
-	ok := bridge.Setup(ctx, bridge.USER)
+	ok := security.Verify(ctx, security.USER)
 	if !ok {
 		return ""
 	}
@@ -186,7 +186,7 @@ func generateData(ctx *context.Context, s *cms.CMS, module string) string {
 
 func Install(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
-	ok := bridge.Setup(ctx, bridge.USER)
+	ok := security.Verify(ctx, security.USER)
 	if !ok {
 		return ""
 	}

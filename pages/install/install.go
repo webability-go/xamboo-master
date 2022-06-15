@@ -6,12 +6,12 @@ import (
 	"github.com/webability-go/xamboo/cms/context"
 	"github.com/webability-go/xamboo/config"
 
-	"master/app/bridge"
+	"master/app/security"
 )
 
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
-	ok := bridge.Setup(ctx, bridge.NOTINSTALLED)
+	ok := security.Verify(ctx, security.NOTINSTALLED)
 	if !ok {
 		return ""
 	}

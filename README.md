@@ -24,11 +24,15 @@ TO DO
 Version Changes Control
 =======================
 
+V0.1.1 - 2022-06-14
+-----------------------
+- removed bridge support (not anymore needed)
+- All the code rewriten without bridge, and with new XDommask hooks
+
 V0.1.0 - 2022-06-09
 -----------------------
 - Made compatible with Xamboo 1.6
 . Nade compatible with xmodules/base 2022-06-09
-- removed bridge support (not anymore needed)
 
 V0.0.7 - 2021-04-22
 -----------------------

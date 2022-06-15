@@ -9,9 +9,11 @@ import (
 	"strings"
 
 	"github.com/webability-go/xamboo/cms/context"
+
+	"github.com/webability-go/xmodules/tools"
 )
 
-func VerifyLogin(ctx *context.Context) {
+func VerifySession(ctx *context.Context) {
 
 	// Any sent session ?
 	sessionid := ""
@@ -31,7 +33,7 @@ func VerifyLogin(ctx *context.Context) {
 		username := ctx.Request.Form.Get("username")
 		password := ctx.Request.Form.Get("password")
 		// verify against config data
-		md5password := GetMD5Hash(password)
+		md5password := tools.GetMD5Hash(password)
 
 		sysusername, _ := ctx.Sysparams.GetString("username")
 		syspassword, _ := ctx.Sysparams.GetString("password")
@@ -113,7 +115,7 @@ func CreateSession(ctx *context.Context, sessionid string, IP string) string {
 
 	match, _ := regexp.MatchString("[a-zA-Z0-9]{24}", sessionid)
 	if !match {
-		sessionid = CreateKey(cookiesize, -1)
+		sessionid = tools.CreateKey(cookiesize, -1)
 	}
 
 	userkey := "1"
