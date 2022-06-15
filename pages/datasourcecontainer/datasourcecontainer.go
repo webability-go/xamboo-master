@@ -3,15 +3,15 @@ package main
 import (
 	"encoding/xml"
 
-	"github.com/webability-go/xcore/v2"
+	xcore "github.com/webability-go/xcore/v2"
 	"github.com/webability-go/xdominion"
 	"github.com/webability-go/xdommask"
 
 	"github.com/webability-go/xamboo/cms"
 	"github.com/webability-go/xamboo/cms/context"
 
-	"master/app/code"
-	"master/app/security"
+	"masterapp/code"
+	"masterapp/security"
 )
 
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {

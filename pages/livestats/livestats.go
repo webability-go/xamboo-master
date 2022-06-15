@@ -1,11 +1,10 @@
 package main
 
 import (
-	"github.com/webability-go/xcore/v2"
-
 	"github.com/webability-go/xamboo/cms/context"
+	xcore "github.com/webability-go/xcore/v2"
 
-	"master/app/security"
+	"masterapp/security"
 )
 
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {

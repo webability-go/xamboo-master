@@ -5,13 +5,12 @@ import (
 
 	"golang.org/x/text/language"
 
-	"github.com/webability-go/xcore/v2"
-
 	"github.com/webability-go/xamboo/cms"
 	"github.com/webability-go/xamboo/cms/context"
+	xcore "github.com/webability-go/xcore/v2"
 	"github.com/webability-go/xmodules/base"
 
-	"master/app/security"
+	"masterapp/security"
 )
 
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {

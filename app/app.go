@@ -10,7 +10,7 @@ import (
 	"github.com/webability-go/xmodules/base"
 	"github.com/webability-go/xmodules/tools"
 
-	"master/app/code"
+	"masterapp/code"
 )
 
 const (
