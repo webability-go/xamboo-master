@@ -5,12 +5,12 @@ import (
 	"github.com/webability-go/xamboo/config"
 	xcore "github.com/webability-go/xcore/v2"
 
-	"masterapp/security"
+	"masterapp/assets"
 )
 
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
-	ok := security.Verify(ctx, security.ANY)
+	ok := assets.Verify(ctx, assets.ANY)
 	if !ok {
 		return ""
 	}
@@ -39,7 +39,7 @@ func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLangu
 
 func Formlogin(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
-	ok := security.Verify(ctx, security.ANY)
+	ok := assets.Verify(ctx, assets.ANY)
 	if !ok {
 		return ""
 	}
@@ -70,7 +70,7 @@ func Formlogin(ctx *context.Context, template *xcore.XTemplate, language *xcore.
 
 func Formpassword(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
-	ok := security.Verify(ctx, security.ANY)
+	ok := assets.Verify(ctx, assets.ANY)
 	if !ok {
 		return ""
 	}
@@ -83,7 +83,7 @@ func Formpassword(ctx *context.Context, template *xcore.XTemplate, language *xco
 
 func Disconnect(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
-	ok := security.Verify(ctx, security.ANY)
+	ok := assets.Verify(ctx, assets.ANY)
 	if !ok {
 		return ""
 	}

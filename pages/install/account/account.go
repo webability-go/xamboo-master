@@ -8,15 +8,14 @@ import (
 
 	"github.com/webability-go/xamboo/cms/context"
 
-	"masterapp/code"
-	"masterapp/security"
+	"masterapp/assets"
 )
 
 var language *xcore.XLanguage
 
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
-	ok := security.Verify(ctx, security.NOTINSTALLED)
+	ok := assets.Verify(ctx, assets.NOTINSTALLED)
 	if !ok {
 		return ""
 	}
@@ -156,10 +155,11 @@ WA.toDOM('install|single|step3').className = 'installstepactual';
 
 func Formaccount(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
-	ok := security.Verify(ctx, security.NOTINSTALLED)
+	ok := assets.Verify(ctx, assets.NOTINSTALLED)
 	if !ok {
 		return ""
 	}
+	code := assets.GetEntries()
 
 	L := ctx.Request.Form.Get("LANGUAGE")
 	C := ctx.Request.Form.Get("COUNTRY")

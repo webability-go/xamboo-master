@@ -16,7 +16,7 @@ import (
 	"github.com/webability-go/xamboo/components/stat"
 	xcore "github.com/webability-go/xcore/v2"
 
-	"masterapp/security"
+	"masterapp/assets"
 )
 
 type listenerStream struct {
@@ -35,7 +35,7 @@ var counter = 1
 */
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
-	ok := security.Verify(ctx, security.USER)
+	ok := assets.Verify(ctx, assets.USER)
 	if !ok {
 		return ""
 	}
@@ -108,7 +108,7 @@ func Write(ls listenerStream, done chan bool) {
 		num := 0
 		for _, x := range stat.SystemStat.Requests {
 			if last.Before(x.Time) {
-				// we limit paquet size to 100 for security
+				// we limit paquet size to 100 for assets
 				if num < 100 {
 					newreqs = append(newreqs, x)
 				}

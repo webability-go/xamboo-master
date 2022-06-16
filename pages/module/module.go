@@ -10,12 +10,12 @@ import (
 	xcore "github.com/webability-go/xcore/v2"
 	"github.com/webability-go/xmodules/base"
 
-	"masterapp/security"
+	"masterapp/assets"
 )
 
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
-	ok := security.Verify(ctx, security.USER)
+	ok := assets.Verify(ctx, assets.USER)
 	if !ok {
 		return ""
 	}
@@ -185,7 +185,7 @@ func generateData(ctx *context.Context, s *cms.CMS, module string) string {
 
 func Install(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
-	ok := security.Verify(ctx, security.USER)
+	ok := assets.Verify(ctx, assets.USER)
 	if !ok {
 		return ""
 	}

@@ -24,6 +24,11 @@ TO DO
 Version Changes Control
 =======================
 
+V0.1.2 - 2022-06-16
+-----------------------
+- Creation of appEntries to access app functions
+- Needed code rewritten to use the appEntries
+
 V0.1.1 - 2022-06-14
 -----------------------
 - removed bridge support (not anymore needed)

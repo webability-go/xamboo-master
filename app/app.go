@@ -10,11 +10,12 @@ import (
 	"github.com/webability-go/xmodules/base"
 	"github.com/webability-go/xmodules/tools"
 
+	"masterapp/assets"
 	"masterapp/code"
 )
 
 const (
-	VERSION = "0.0.1"
+	VERSION = "0.0.2"
 )
 
 var (
@@ -24,8 +25,16 @@ var (
 
 func init() {
 	// Have to use the system language or english by default
-	// YOu may change default language of the system (know languages: English, Spanish, French)
+	// You may change default language of the system (known languages: English, Spanish, French)
 	tools.Language = language.Spanish
+
+	assets.MasterAppEntries = &assets.AppEntries{
+		VerifySession:  code.VerifySession,
+		ReloadConfig:   code.ReloadConfig,
+		GetMainConfig:  code.GetMainConfig,
+		GenerateConfig: code.GenerateConfig,
+		Containers:     &Containers,
+	}
 }
 
 type LocalApp struct{}
@@ -47,20 +56,4 @@ func (la *LocalApp) GetDatasourceSet() applications.DatasourceSet {
 
 func (la *LocalApp) GetCompiledModules() applications.ModuleSet {
 	return base.ModulesList
-}
-
-func VerifySession(ctx *context.Context) {
-	code.VerifySession(ctx)
-}
-
-func ReloadConfig() error {
-	return code.ReloadConfig()
-}
-
-func GetMainConfig() map[string]interface{} {
-	return code.GetMainConfig()
-}
-
-func GenerateConfig(ctx *context.Context, L string, C string, serial string, username string, password string, email string) {
-	code.GenerateConfig(ctx, L, C, serial, username, password, email)
 }
