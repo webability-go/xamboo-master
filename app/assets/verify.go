@@ -1,18 +1,9 @@
-package security
+package assets
 
 import (
 	"net/http"
 
 	"github.com/webability-go/xamboo/cms/context"
-)
-
-const (
-	// Must be NOT installed or error
-	NOTINSTALLED = 1
-	// Must be INSTALLED, DOES NOT MATTER IF THE USER IS OR NOT CONNECTED
-	ANY = 2
-	// Must be INSTALLED and THE USER MUST BE CONNECTED TO USE THE BRIDGE
-	USER = 3
 )
 
 func Verify(ctx *context.Context, connection int) bool {

@@ -12,8 +12,7 @@ import (
 
 	"github.com/webability-go/xamboo/cms/context"
 
-	"masterapp/code"
-	"masterapp/security"
+	"masterapp/assets"
 )
 
 var language *xcore.XLanguage
@@ -24,7 +23,7 @@ func Run(ctx *context.Context, template *xcore.XTemplate, xlanguage *xcore.XLang
 		language = xlanguage
 	}
 
-	ok := security.Verify(ctx, security.USER)
+	ok := assets.Verify(ctx, assets.USER)
 	if !ok {
 		return ""
 	}
@@ -199,7 +198,7 @@ func build(mask *xdommask.Mask, ctx *context.Context) error {
 
 func Formconfig(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
-	ok := security.Verify(ctx, security.USER)
+	ok := assets.Verify(ctx, assets.USER)
 	if !ok {
 		return ""
 	}
@@ -254,6 +253,7 @@ func update(m *xdommask.Mask, ctx *context.Context, key interface{}, newrec *xdo
 	// TODO(phil) verify language and country are authorized, password is strong enough
 
 	if success {
+		code := assets.GetEntries()
 		code.GenerateConfig(ctx, L, C, serial, username, password, email)
 		return nil
 	}

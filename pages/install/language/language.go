@@ -9,12 +9,12 @@ import (
 
 	"github.com/webability-go/xamboo/cms/context"
 
-	"masterapp/security"
+	"masterapp/assets"
 )
 
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
-	ok := security.Verify(ctx, security.NOTINSTALLED)
+	ok := assets.Verify(ctx, assets.NOTINSTALLED)
 	if !ok {
 		return ""
 	}

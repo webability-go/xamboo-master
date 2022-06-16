@@ -10,13 +10,12 @@ import (
 	"github.com/webability-go/xamboo/cms"
 	"github.com/webability-go/xamboo/cms/context"
 
-	"masterapp/code"
-	"masterapp/security"
+	"masterapp/assets"
 )
 
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
-	ok := security.Verify(ctx, security.USER)
+	ok := assets.Verify(ctx, assets.USER)
 	if !ok {
 		return ""
 	}
@@ -32,6 +31,7 @@ func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLangu
 
 func searchLog(s *cms.CMS, ctx *assets.Context, host string, app string) string {
 	config := s.GetFullConfig()
+	code := assets.GetEntries()
 
 	// Carga los APPs Libraries de cada Host config
 	for _, h := range config.Hosts {
@@ -157,10 +157,11 @@ func getMask(ctx *context.Context, s *cms.CMS) *xdommask.Mask {
 
 func Formcontainer(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
-	ok := security.Verify(ctx, security.USER)
+	ok := assets.Verify(ctx, assets.USER)
 	if !ok {
 		return ""
 	}
+	code := assets.GetEntries()
 
 	//	key := ctx.Request.Form.Get("Key")
 	mode := ctx.Request.Form.Get("Mode")

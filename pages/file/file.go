@@ -7,13 +7,12 @@ import (
 
 	"github.com/webability-go/xamboo/cms/context"
 
-	"masterapp/code"
-	"masterapp/security"
+	"masterapp/assets"
 )
 
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, e interface{}) interface{} {
 
-	ok := security.Verify(ctx, security.USER)
+	ok := assets.Verify(ctx, assets.USER)
 	if !ok {
 		return ""
 	}
@@ -30,6 +29,7 @@ func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLangu
 func getData(ctx *context.Context, language *xcore.XLanguage) string {
 
 	resourcesdir, _ := ctx.Sysparams.GetString("resourcesdir")
+	code := assets.GetEntries()
 
 	cfg := code.GetMainConfig()
 	/*

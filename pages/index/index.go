@@ -12,13 +12,12 @@ import (
 
 	"github.com/webability-go/xmodules/base"
 
-	"masterapp/code"
-	"masterapp/security"
+	"masterapp/assets"
 )
 
 func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
-	ok := security.Verify(ctx, security.USER)
+	ok := assets.Verify(ctx, assets.USER)
 	if !ok {
 		return ""
 	}
@@ -33,7 +32,7 @@ func Run(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLangu
 
 func Menu(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
-	ok := security.Verify(ctx, security.USER)
+	ok := assets.Verify(ctx, assets.USER)
 	if !ok {
 		return ""
 	}
@@ -73,7 +72,7 @@ func Menu(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLang
 
 		//    $id = $this->base->HTTPRequest->getParameter('id');
 		//    $status = $this->base->HTTPRequest->getParameter('status');
-		//    $this->base->security->setParameter('mastertree', $id, $status=='true'?1:0);
+		//    $this->base->assets->setParameter('mastertree', $id, $status=='true'?1:0);
 	}
 
 	return map[string]string{
@@ -415,6 +414,7 @@ func getMenu(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[st
 func getFiles(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map[string]interface{} {
 
 	rows := []interface{}{}
+	code := assets.GetEntries()
 
 	cfg := code.GetMainConfig()
 	ifiles := cfg["include"]
@@ -866,10 +866,11 @@ func getModulesOfContainer(ctx *context.Context, s *cms.CMS, language *xcore.XLa
 
 func Reloadconfig(ctx *context.Context, template *xcore.XTemplate, language *xcore.XLanguage, s interface{}) interface{} {
 
-	ok := security.Verify(ctx, security.USER)
+	ok := assets.Verify(ctx, assets.USER)
 	if !ok {
 		return ""
 	}
+	code := assets.GetEntries()
 
 	code.ReloadConfig()
 
