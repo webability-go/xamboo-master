@@ -662,9 +662,19 @@ func getModules(ctx *context.Context, s *cms.CMS, language *xcore.XLanguage) map
 	for _, h := range config.Hosts {
 		for _, plg := range h.Plugins {
 
+			fmt.Println(plg.Id)
+
 			// TODO(phil) add and calculate how many modules are authorized and installed
 			application := applications.GetApplication(plg.Id)
+			if application == nil {
+				fmt.Println("Application NIL:", plg.Id)
+				continue
+			}
 			icompiledmodules := application.GetCompiledModules()
+			if icompiledmodules == nil {
+				fmt.Println("Compiled Modules NIL:", plg.Id)
+				continue
+			}
 			compiledmodules := icompiledmodules.(*base.Modules)
 
 			for _, mod := range *compiledmodules {
